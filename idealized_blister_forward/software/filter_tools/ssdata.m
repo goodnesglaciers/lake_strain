@@ -1,0 +1,55 @@
+     function [t, Data, Signal, G, s, sdot] = ssdata(ns, sigmas)
+%%
+%% function [t, Data, Signal, G, s, sdot] = ssdata(ns, sigmas)
+%%
+%% Simulate Network model for strike-slip fault
+%% slip follows: s(t) = linear trend + exponential
+%% Data is:      d(t) = G*s + Random Walk + white noise
+%%
+%% 	Input :  ns = [Nsites, Nepochs]    
+%% 			Nsites	= number of observation sites
+%% 			Nepochs	= number of observation epochs
+%%		sigmas = [tau, sigma]
+%% 			tau	= random walk stand deviation, mm/sqrt(yr)
+%% 			sigma	= white noise standard deviation, mm
+%% 	Output : 
+%%			t 	= Nepochs Vector of observation times
+%%			Data 	= Nsites*Nepochs matrix of observations
+%%			Signal 	= Nsites*Nepochs matrix of signal
+%%			G 		= Nsites*1 maps slip to Signal
+%%			s 		= Nepochs*1 true slip history
+%%			sdot		= Nepochs*1 true slip rate
+
+	Nsites = ns(1);  Nepochs = ns(2);
+	tau = sigmas(1);  sigma = sigmas(2);
+
+%% xloc	= locations of the observation sites
+	x_loc = linspace(-8,8,Nsites);
+	d = 1;				% normalized depth
+	G = atan(x_loc/d)/pi;
+	G = G';
+	
+%% s(t) slip as a function of time
+
+	A = 0.5; 		% amplitude in mm
+	t_0 = 0.3;		% characteristic time in yr
+	b = 20;			% rate in mm/yr
+
+	t = linspace(0, 1, Nepochs);
+	dimt = (t-min(t))/(max(t)-min(t));	% normalized time
+	s = b*t + A*exp(dimt/t_0);
+	sdot = b + (A/t_0)*exp(dimt/t_0)/(max(t)-min(t));
+
+
+%%  Generate Signal	
+	Signal = G*s;
+
+%%  Generate Data
+        delt = t(2) - t(1);
+        rn = randn(size(Signal'));
+        rn = [zeros(1,Nsites); rn(2:length(t),:)];
+        rw = cumsum(tau*sqrt(delt)*rn )';
+        Data = Signal + rw + sigma * randn(size(Signal));
+
+        t = t';
+	

@@ -1,0 +1,46 @@
+function [] = plotpatchslip(pm,slip,i,j)
+%
+% plotpatchslip
+%
+% plots slip on fault patches on 2-D grid
+%
+% i =  num segments along fault length
+% j =  num segments along fault width
+%
+
+wid = pm(1,2);
+len = pm(1,1);
+east = pm(:,6);
+north = pm(:,7);
+
+mp = [east north];
+
+strike = (pi/180)*pm(1,5);
+
+Rs = [cos(strike), -sin(strike); sin(strike), cos(strike)];
+mp = mp*Rs';
+
+x1 = mp(:,2)-(0.5*len);
+x2 = mp(:,2)+(0.5*len); 
+
+x = [x1 x2];
+
+offset =  min(  min(x1), min(x2) );
+x1 = x1 - offset;
+x2 = x2 - offset;
+
+[np,foo] = size(mp);
+
+y1 = wid*(0:j-1)'*ones(1,np/j); 
+y2 = wid*(1:j)'*ones(1,np/j); 
+
+y = -1*[y1(:) y2(:)];
+
+xvert = [x(:,1)'; x(:,2)'; x(:,2)'; x(:,1)'];
+yvert = [y(:,1)'; y(:,1)'; y(:,2)'; y(:,2)'];
+
+% 
+figure
+patch(xvert,yvert,slip), axis('equal')
+colormap(cool)
+colorbar

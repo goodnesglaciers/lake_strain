@@ -1,0 +1,77 @@
+function [M, color_scale] = slip_movie(pm,rate,i,j, t)
+%
+% [M, V] = slip_movie(pm,rate,i,j, t)
+%
+%
+% plots slip on fault patches on 2-D grid
+%
+% i =  num segments along fault length
+% j =  num segments along fault width
+%
+
+wid = pm(1,2);
+len = pm(1,1);
+east = pm(:,6);
+north = pm(:,7);
+
+mp = [east north];
+
+strike = (pi/180)*pm(1,5);
+
+Rs = [cos(strike), -sin(strike); sin(strike), cos(strike)];
+mp = mp*Rs';
+
+x1 = mp(:,2)-(0.5*len);
+x2 = mp(:,2)+(0.5*len); 
+
+offset =  min(  min(x1), min(x2) );
+x1 = x1 - offset;
+x2 = x2 - offset;
+
+x = [x1 x2];
+
+[np,foo] = size(mp);
+
+y1 = wid*(0:j-1)'*ones(1,np/j); 
+y2 = wid*(1:j)'*ones(1,np/j); 
+
+y = -1*[y1(:) y2(:)];
+
+xvert = [x(:,1)'; x(:,2)'; x(:,2)'; x(:,1)'];
+yvert = [y(:,1)'; y(:,1)'; y(:,2)'; y(:,2)'];
+
+% 
+figure
+patch(xvert,yvert,rate(:,1)'), axis('equal')
+lim = axis;
+colormap(jet)
+colorbar
+
+
+[Npatches, Nepochs] = size(rate);
+
+%% Determine limits for color scale
+	mx = max(rate(:,1));
+	mn = min(rate(:,1));
+for k = 2:Nepochs
+	max_now = max(rate(:,k));
+	min_now = min(rate(:,k));
+	mx = max(mx, max_now);	
+	mn = min(mn, min_now);	
+end
+color_scale = [mn mx];
+
+xs = 0.5*(lim(1) + lim(2));
+ys = 0.5*(lim(4) - max(max(yvert))) + 1;
+M = moviein(Nepochs);
+
+for k = 1:Nepochs
+	kk = k;
+	fill(xvert,yvert,rate(:,kk)'), axis('equal');
+	axis(lim), caxis(color_scale);
+        text(xs, ys, ['19', num2str(t(kk))])
+	colormap(jet), colorbar
+	M(:,k) = getframe;
+end
+
+

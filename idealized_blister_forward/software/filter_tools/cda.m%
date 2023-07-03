@@ -1,0 +1,33 @@
+  function [t, Data] = cda(files, sites, Ncomps, Nepochs, origin)
+%% function [t, Data] = cda(files, sites, Ncomps, Nepochs, origin)
+%%
+%% create data array for plotting
+
+
+%% Initialize a Data arrray with NaN's
+
+Data  = NaN*ones(Ncomps, Nepochs);
+[nfiles, junk] = size(files);
+
+for k=1:nfiles
+
+	%% Read in the data file
+        disp(['file:   ', files(k,:)])
+        [pos, pos_cov, t(k), sitecodes] = read_sinex(files(k,:));
+        [Nstsob, four] = size(sitecodes);
+
+
+	%% rotate the positions and covariance into ENU
+	[ENU, covENU] = xyz2enu(pos(:), pos_cov, origin);
+
+        for i = 1:Nstsob
+                kk = GetIndex(sites, sitecodes(i,:));
+		jj = 3*(kk-1)+1;
+%%		temp = pos(:,i);
+%%%		Data(jj:jj+2 , k) = temp(:);
+
+		temp = ENU(3*(i-1)+1:3*(i-1)+3);
+		Data(jj:jj+2 , k) = ENU(3*(i-1)+1:3*(i-1)+3);
+        end
+
+end

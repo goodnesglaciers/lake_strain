@@ -1,0 +1,56 @@
+    function Drand = synth_data(t, sites, files, origin, Signal, tau);
+
+%%           Drand = synth_data(t, sites, files, origin, Signal, tau);
+%%
+%% Subroutine to generate Monte Carlo simulation of data
+%%
+
+
+
+	[Ncomps, Nepochs] = size(Signal);
+	Drand = zeros(size(Signal));
+%%	Dat   = zeros(size(Signal));
+
+% First order the data and add spatially correlated white noise
+
+for k = 1:Nepochs
+        [pos, pos_cov, T, sitecodes] = read_sinex(files(k,:));
+                if length(T) > 1
+                        t(k) = T(1);
+                else
+                        t(k) = T;
+                end	
+
+	Nstsob= size(sitecodes,1);
+
+	ENU_pred = [];
+	%% Extract the correct part of Signal
+	for i = 1:Nstsob
+		kk = GetIndex(sites, sitecodes(i,:));
+                jj = 3*(kk-1)+1;
+		ENU_pred = [ENU_pred; Signal(jj:jj+2,k)];
+	end
+
+	%% rotate the positions and covariance into ENU
+	[ENU, covENU] = xyz2enu(pos(:), pos_cov, origin);
+%%	Dat(1:3*Nstsob ,k) = ENU;
+
+	%% Add noise to the predicted data according to the actual covariance matrix;
+	
+	[V, E] = eig(covENU);
+	Gamma = V*diag(sqrt(diag(E)));
+	Drand(1:3*Nstsob ,k) = ENU_pred + Gamma*randn(size(ENU));
+
+end
+
+
+%% Add random walk
+
+	rw = zeros(size(Signal));
+	for k = 2:Nepochs
+		rw(:,k) = rw(:,k-1) + tau*sqrt(t(k)-t(k-1))*randn(Ncomps,1); 
+
+	end
+
+	Drand = Drand + rw;
+

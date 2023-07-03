@@ -1,0 +1,24 @@
+  function plotddhat(t,d,dhat)
+%% function plotd(t,d)
+%% 
+%%	Plot data so lines don't overlap
+%%
+%%	Input:
+%%			t = vector of times
+%%			d = matrix of obsrvations
+%%
+        dp = zeros(size(d));
+	dph = zeros(size(d));
+
+        dp(1,:) = d(1,:);
+        dph(1,:) = dhat(1,:);
+
+        [Nsites,n] = size(d);
+        for k=2:Nsites
+                dp(k,:) = d(k,:) + max(dp(k-1,:)) - min(d(k,:));
+		dph(k,:) = dhat(k,:) + max(dp(k-1,:)) - min(d(k,:));
+        end
+
+        plot(t,dp)
+
+	hold on,plot(t,dp,'+'), plot(t,dph)

@@ -1,0 +1,38 @@
+  function [ENU, covENU] = xyz2enu(XYZ, cov_XYZ, origin)
+% function [ENU, covENU] = xyz2enu(XYZ, cov_XYZ, origin)
+%
+% Rotates the  vector of positions [X, Y, Z]' and covariance 
+% to the local east-north-up system at origin.
+% XYZ = [X1, Y1, Z1, X2, Y2, Z2, ....XN, YN, ZN];
+
+%[lat, lon, h] = xyz2llh(XYZ(1), XYZ(2), XYZ(3));
+lat = origin(1); lon = origin(2);
+
+lat = origin(1)*pi/180;  lon = origin(2)*pi/180;
+
+sphi = sin(lat);
+cphi = cos(lat);
+slmb = sin(lon);
+clmb = cos(lon);
+
+T = [-slmb, clmb, 0;  -sphi*clmb , -sphi*slmb, cphi; cphi*clmb, cphi*slmb, sphi];
+
+
+Tm = zeros(size(cov_XYZ));
+nsta = length(XYZ)/3;
+
+for i = 1:nsta
+	ind = 3*(i-1)+1;
+ 	Tm(ind:ind+2, ind:ind+2)  = T;
+end
+
+ENU = Tm*XYZ;
+
+if cov_XYZ ~= []
+	covENU = Tm*cov_XYZ*Tm';
+else
+	covENU = [];
+end
+
+
+
