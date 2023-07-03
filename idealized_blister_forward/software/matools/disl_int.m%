@@ -1,0 +1,51 @@
+fig = figure('Color',[0,0,0.8],'Name','Disl_int')
+%global dip len wid dep strik delE delN ss ds op
+%global xmin xmax ymin ymax
+
+% Set Initial Parameters to Display
+dip = +89.9;len = 55.0;wid = 10.0;dep = 10.0;ss = -1;ds = 0;op = 0;strik = -55.58;
+delE = 50;delN = 0;
+xmin = 30; xmax = 100; ymin = -100; ymax = 20;
+
+%% multilabels = uicontrol(fig, 'Style', 'edit',  'String','Length|Width|Depth|Dip|Strike|X_E|X_N|Strike-slip|Dip-slip|Open', 'Position', [10 200 75 180], 'Max', 2);
+
+%% Draw Labels For Dislocation Geometry
+txt = uicontrol(fig, 'Style', 'text', 'String', 'Length', 'Position', [10 360 75 20]);
+txt = uicontrol(fig, 'Style', 'text', 'String', 'Width',  'Position', [10 340 75 20]);
+txt = uicontrol(fig, 'Style', 'text', 'String', 'Depth',  'Position', [10 320 75 20]);
+txt = uicontrol(fig, 'Style', 'text', 'String', 'Dip',    'Position', [10 300 75 20]);
+txt = uicontrol(fig, 'Style', 'text', 'String', 'Strike', 'Position', [10 280 75 20]);
+txt = uicontrol(fig, 'Style', 'text', 'String', 'Delta E', 'Position', [10 260 75 20]);
+txt = uicontrol(fig, 'Style', 'text', 'String', 'Delta N', 'Position', [10 240 75 20]);
+txt = uicontrol(fig, 'Style', 'text', 'String', 'Strike-slip', 'Position', [10 220 75 20]);
+txt = uicontrol(fig, 'Style', 'text', 'String', 'Dip-slip',    'Position', [10 200 75 20]);
+txt = uicontrol(fig, 'Style', 'text', 'String', 'Opening',     'Position', [10 180 75 20]);
+
+%% Get Values For Dislocation Geometry
+getlen = uicontrol(fig, 'Style', 'edit',  'String', num2str(len), 'Position', [95 360 75 20]);
+getwid = uicontrol(fig, 'Style', 'edit',  'String', num2str(wid), 'Position', [95 340 75 20]);
+getdep = uicontrol(fig, 'Style', 'edit',  'String', num2str(dep), 'Position', [95 320 75 20]);
+getdip = uicontrol(fig, 'Style', 'edit',  'String', num2str(dip), 'Position', [95 300 75 20]);
+getstr = uicontrol(fig, 'Style', 'edit',  'String', num2str(strik), 'Position', [95 280 75 20]);
+getdle = uicontrol(fig, 'Style', 'edit',  'String', num2str(delE), 'Position', [95 260 75 20]);
+getdln = uicontrol(fig, 'Style', 'edit',  'String', num2str(delN), 'Position', [95 240 75 20]);
+getsss = uicontrol(fig, 'Style', 'edit',  'String', num2str(ss), 'Position', [95 220 75 20]);
+getdss = uicontrol(fig, 'Style', 'edit',  'String', num2str(ds), 'Position', [95 200 75 20]);
+getops = uicontrol(fig, 'Style', 'edit',  'String', num2str(op), 'Position', [95 180 75 20]);
+
+%% Draw Labels For Grid Dimensions
+%% multilabels = uicontrol(fig, 'Style', 'edit',  'String','X_min|X_max|Y_min|Y_max', 'Position', [10 10 50 80], 'Max', 2);
+txt = uicontrol(fig, 'Style', 'text', 'String', 'X_min', 'Position', [10 90 50 20]);
+txt = uicontrol(fig, 'Style', 'text', 'String', 'X_max', 'Position', [10 70 50 20]);
+txt = uicontrol(fig, 'Style', 'text', 'String', 'Y_min', 'Position', [10 50 50 20]);
+txt = uicontrol(fig, 'Style', 'text', 'String', 'Y_max', 'Position', [10 30 50 20]);
+
+%% Get Values For Grid Dimensions
+getxmin = uicontrol(fig, 'Style', 'edit',  'String', num2str(xmin), 'Position', [60 90 50 20]);
+getxmax = uicontrol(fig, 'Style', 'edit',  'String', num2str(xmax), 'Position', [60 70 50 20]);
+getymin = uicontrol(fig, 'Style', 'edit',  'String', num2str(ymin), 'Position', [60 50 50 20]);
+getymax = uicontrol(fig, 'Style', 'edit',  'String', num2str(ymax), 'Position', [60 30 50 20]);
+
+%
+distart1 =  uicontrol(fig, 'Style', 'push',  'String', 'Run Grids', 'Position', [300 360 100 25], 'CallBack','disrun', 'BackgroundColor','white', 'ForegroundColor','red');
+distart2 =  uicontrol(fig, 'Style', 'push',  'String', 'Help Geometry', 'Position', [300 260 100 25], 'CallBack','help_geom1', 'BackgroundColor','white', 'ForegroundColor','red');

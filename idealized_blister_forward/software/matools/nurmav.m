@@ -1,0 +1,54 @@
+	function [u,u_post,v,gamma] = nurmav(x,t,D,H,slip,tR);
+
+%	 [u,upost,v,gamma] = nurmav(x,t,D,H,slip,tR);
+%
+% Postseismic displacements due to slip on fault of
+% depth D, in an elastic layer of thickness H, over
+% a Maxwell viscoelastic half-space.  Model originally
+% due to Nur and Mavko.
+%
+%	tR = Maxwell relaxation time in same units as time
+%	u  = displacement (including coseismic);
+%	u_post  = displacement (postseismic only);
+%	v  = postseismic velocity
+%	gamma = postseismic strain-rate
+
+bt = -t/tR;  % Non-dimensional time
+warning off  % so you don't get warnings when x = 0.
+eps = 1; n=1;
+u_post = zeros(length(x),length(t));
+v = zeros(length(x),length(t));
+gamma = zeros(length(x),length(t));
+
+% main loop
+while eps > .005
+	insum = 0;       % inner sum for displacement
+	for m = 1:n
+		insum = insum + (-1)^(m-1)*bt.^(n-m)./fact(n-m);
+	end
+
+	term = 1 - (-1)^(n-1).*exp(bt).*insum;
+	vterm =  (exp(bt)/tR).*(t/tR).^(n-1)/fact(n-1);
+
+	Fn = atan( (2*n*H+D)./x) -  atan( (2*n*H-D)./x);
+	d1 = (2*n*H+D);
+	d2 = (2*n*H-D);
+	Gn = -d1./(x.^2 + d1^2)  + d2./(x.^2 + d2^2);
+
+	add = Fn'*term;
+	u_post = u_post + add;
+	
+	v = v + Fn'*vterm;
+	gamma = gamma + Gn'*vterm;
+
+	eps = abs(  max(max( add)));
+	n = n+1;
+end
+	u_post = slip*u_post/pi;
+ 	v = slip*v/pi;
+	gamma = slip*gamma/pi;
+
+% coseismic displacement
+	q = slip*atan(D./x)/pi;
+	u = repmat(q',1,length(t)) + u_post;
+
