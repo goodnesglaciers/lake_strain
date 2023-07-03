@@ -1,0 +1,115 @@
+  function [val, sig2] = netloglik(t, Data, G, theta1, theta2)
+%%
+%% [val, sig2] = netloglik(t, Data, G, theta1, theta2)
+%%
+%% Evaluate Loglikelihood for network model
+%% Data is      d(t) = G*s(t) + B(t) + white noise
+%% slip is: 	s(t) = b*t + W(t)
+%%
+%% Input :  
+%%	t	= vector of observation times 
+%%	Data 	= Nsites*Nepochs matrix of observations
+%%	G 	= Nsites*Nbasis maps slip to Signal
+%% 		Nsites	= number of observation sites
+%% 		Nepochs	= number of observation epochs
+%%	sigmas; 
+%%		theta1 = tau/sigma;
+%%		theta2 = alpha/sigma;
+%% 		tau	= random walk standard deviation, mm/sqrt(yr)
+%% 		sigma	= white noise standard deviation, mm
+%% 		alpha 	= scale of Weiner process	
+%%
+%% Output:      val  = C - 2 * log(L)
+%% 		C  (= n - n log n) is a constant 
+%% 		L is the profile likelihood  
+%%		sig2 = estimated variance
+%%
+%%  State Vector: x = [b_1, W_1(t), dot{W_1(t)}, b_2, W_2(t), ....
+%%			B_1(t), B_2(t),	B_3(t),...B_Nsites(t)]'
+%%
+%%  Observation eq:  d_k = H_k*x_k + eps_k		eps_k ~ N(0,sig^2*R_k)
+%%  Update equation:  x_k+1 = F_k*x_k + delta_k		delta_k ~ N(0,sig^2*Q_k)
+%%
+%%  10/8/98  Fixed bug in calculation of vsum
+
+%% Determine some dimensions
+	[Nsites, Nepochs] = size(Data);
+	n = Nepochs;
+	[ncheck, Nbasis]  = size(G);
+	if ncheck ~= Nsites
+		disp('G and Data are inconsistent')
+	end
+	statedim = 3*Nbasis + Nsites;
+	t = t - min(t);
+	
+%% Some parameters
+	Big = 10000;
+	Small = 1.0e-4;
+%%	tau = sigmas(1); sigma = sigmas(2); 
+	tau = theta1; alpha=theta2; 
+	vsum = 0; rsum = 0;
+
+%% Matricies to be used in smoothing operation & for Square Root Filter
+	s = zeros(statedim+Nsites);
+
+%% Time invariant operators:
+	R = eye(Nsites);
+
+%% Starting (prior) values for state and covariance matrix:
+	x = zeros(statedim,1);
+	covx = Small*eye(statedim);
+	for j=1:Nbasis
+		covx(3*(j-1)+1,3*(j-1)+1) = Big;
+	end
+
+%% First update step to get x_1/1 and covariance, using straight Kalman filter
+	H = makeH(Nsites, Nbasis, t(1), G);
+        nu = Data(:,1) - H*x;           % "Inovation" or prediction error
+
+	V = R + H*covx*H';
+	invH = inv(V);
+
+        g = covx*H'*invH;    % Kalman gain
+        x = x + g*nu;
+        covx = covx - g*H*covx;
+
+	%% Components of Likelihood
+	rsum = rsum + nu'*invH*nu;
+	vsum = vsum + log(  det(V)  );
+
+%% Run Square Root Filter
+	for k = 2:n
+		%% Prediction Step:
+		delt = t(k) - t(k-1);
+		F = makeF(statedim, Nbasis, delt);  % State Transition Matrix
+		Q = makeQ(statedim, Nbasis, delt, alpha, tau);
+		 				    % "Process" Covariance
+		x = F*x;
+		covx =  F*covx*F' + Q;
+		sqrsigma = chol(covx)';
+
+		%% Update Step:
+		H = makeH(Nsites, Nbasis, t(k), G);
+    		nu = Data(:,k) - H*x;        % "Inovation" or prediction error
+		u = H*sqrsigma;
+		V = R + u*u';
+		invH = inv(V);
+		g = covx*H'*invH;		% Kalman gain
+     	  	x = x + g*nu;
+     	   	
+		s = [ chol(R)', zeros(Nsites,statedim); u', sqrsigma'];
+                [q1,r1] = qr(s);
+                sqrsigma = r1(Nsites+1:Nsites+statedim, ...
+			Nsites+1:Nsites+statedim)';
+                covx = sqrsigma * sqrsigma';
+%
+		%% Components of Likelihood
+		rsum = rsum + nu'*invH*nu;
+		vsum = vsum + log(  det(V)  );
+		
+	end;
+%%
+%%
+N = Nsites*Nepochs;
+val = N*log(rsum) + vsum;
+sig2 = rsum/N;
