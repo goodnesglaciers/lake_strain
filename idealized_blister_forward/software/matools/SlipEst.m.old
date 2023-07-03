@@ -1,0 +1,84 @@
+%SlipEst.m
+%  Script to Estimate Slip in Dislocation Models for Fixed Fault Geometry.
+%  Currently implemented for GPS data only
+%  Paul Segall 1995
+
+
+%Poisson's ratio
+        nu = 0.25;
+
+%Update fault geometry and station coordinates in local coords
+        UpdateGeom
+        xy = llh2localxy(llh, [lat1(1);  lon1(1)]);
+
+        d = vel(:);
+        ndata = length(d);
+        nvec = ndata/3;
+
+% Create design matrix
+	G = zeros(ndata,3*nf);
+
+for i=1:nf
+	if ss(i)~=0 
+	  u_rel_1 = relative_disp(nu, [len(i),wid(i),dep(i),dip(i),strik(i),delE(i),delN(i),1,0,0], xy); 
+	  G(:,3*(i-1)+1) = u_rel_1(:);
+	end
+
+	if ds(i)~=0 
+	  u_rel_2 = relative_disp(nu, [len(i),wid(i),dep(i),dip(i),strik(i),delE(i),delN(i),0,1,0], xy); 
+	  G(:,3*(i-1)+2) = u_rel_2(:);
+	end
+
+	if op(i)~=0 
+	  u_rel_3 = relative_disp(nu, [len(i),wid(i),dep(i),dip(i),strik(i),delE(i),delN(i),0,0,1], xy); 
+	  G(:,3*(i-1)+3) = u_rel_3(:);
+	end
+end
+
+
+%weight invert and estimate slip
+	W = chol(inv(cov));
+	Ginv = pinv(W*G);
+	slip = Ginv*W*d;
+	cov_slip = Ginv*Ginv';
+	sig_slip = sqrt(diag(cov_slip));
+	dhat = G*slip;
+
+% Output results
+	PrintSlip(slip, sig_slip);
+
+% compute weighted residual sum of squares
+        r = W*(d - dhat);
+        disp(' ')
+        disp('GOODNESS OF FIT')
+        fprintf('Weighted Residual Sum of Squares (WRSS), %g\n', r'*r)
+        fprintf('WRSS / (N-P),         %g\n', (r'*r)/(ndata-rank(G)) )
+        disp(' ')
+
+% plot observed vectors
+        [a,b,az] = ErrlpsGMT( cov3d2cov2d(cov)  );
+        outmatrix1 = [llh(2,1:nvec)', llh(1,1:nvec)', vel(1,:)', vel(2,:)',a',b',az'];
+
+
+% plot predicted vectors
+	u_pre = zeros(3,nvec);
+	for i = 1:nvec
+		u_pre(:,i)  = dhat( 3*(i-1)+1 : 3*(i-1)+3 );
+	end
+	null = zeros(size(u_pre(1,:)))';
+	outmatrix2 = [llh(2,1:nvec)', llh(1,1:nvec)', u_pre(1,:)', u_pre(2,:)', null, null, null];
+
+	!rm temp.gmtlin
+	!rm obs.gmtvec
+	!rm mod.gmtvec
+	save obs.gmtvec outmatrix1 -ascii
+	save mod.gmtvec outmatrix2 -ascii
+	for i=1:nf
+           displot_gmt( geom(i,:), dis_geom(i,:) )
+	end
+
+if get(cb_plt, 'value') == 1
+        !test.map
+end
+
+disp('Done')

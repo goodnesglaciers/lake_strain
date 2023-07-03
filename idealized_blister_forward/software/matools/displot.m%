@@ -1,0 +1,29 @@
+function  displot(len,wid,dep,dip,strik,delE,delN) 
+%
+% An M-File to plot surface projection of the dislocation.
+%    Input: Dislocation Geometry in a Global E-N-Up coordinate system
+%		len = fault length in strike direction (km)
+%		wid = fault width in dip direction (km)
+%		dep = fault depth (km)
+%		dip = dip angle (degrees)
+%		strik = fault strike, counter clockwise from E (degrees)
+%		delE  = East offset of midpoint from origin (km)
+%		delN  = North offset of midpoint from origin (km)
+%
+% corners in local coordinates
+i = sqrt(-1);
+dipr = dip*pi/180;
+ll = 0 +i*0;  lr = len + i*0; ul = 0 +i*wid*cos(dipr); ur = len + i*wid*cos(dipr);
+%
+%transform corners to global coordinates
+strkr = strik*pi/180;
+%
+ll = (delE+delN*i) + ll*exp(i*strkr);
+lr = (delE+delN*i) + lr*exp(i*strkr);
+ul = (delE+delN*i) + ul*exp(i*strkr);
+ur = (delE+delN*i) + ur*exp(i*strkr);
+%
+plot( [real(ll), real(lr)], [imag(ll), imag(lr)] ), axis(axis);
+plot( [real(ll), real(ul)], [imag(ll), imag(ul)] ), axis(axis);
+plot( [real(ul), real(ur)], [imag(ul), imag(ur)], 'r' ), axis(axis);
+plot( [real(ur), real(lr)], [imag(ur), imag(lr)] ), axis(axis);

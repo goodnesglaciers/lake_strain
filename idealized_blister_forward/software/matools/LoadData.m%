@@ -1,0 +1,44 @@
+% LoadData.m
+% Script to load Different Data types
+
+% read the various data files
+
+if get(cb_gpsdat, 'value') == 1
+	[vel,cov_gps,llh_gps] = GetGPSdata(get(getname_gps,'string'));
+	d_gps = vel(:);
+	Icov_gps = inv(cov_gps);
+	W_gps = chol(Icov_gps);
+	disp('GPS Data Loaded')
+else
+	d_gps = [];
+	Icov_gps = [];
+	W_gps = [];
+end
+
+
+if get(cb_levdat, 'value') == 1
+        [d_lev, llh_lev, Len, sigma_lev, Icov_lev, W_lev] = ...
+	GetLEVdata(get(getname_lev,'string'));
+	disp('Leveling Data Loaded')
+else
+	d_lev = [];
+	Icov_lev = [];
+	W_lev = [];
+end
+
+if get(cb_edmdat, 'value') == 1
+	disp('EDM Data Not Implemented')
+end
+
+
+% concatenate data, covariance, and weight matricies
+	d = [d_gps; d_lev];
+
+	W = [W_gps, zeros(length(d_gps),length(d_lev)); ...
+	     zeros(length(d_lev),length(d_gps)),W_lev];
+
+	Icov = [Icov_gps, zeros(length(d_gps),length(d_lev)); ...
+	     zeros(length(d_lev),length(d_gps)),Icov_lev];
+
+	size(d)
+	size(W)

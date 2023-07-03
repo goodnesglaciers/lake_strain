@@ -1,0 +1,42 @@
+% figure; fig = gcf; set(fig,'color',[0,0,0.8])
+fig = figure('Color',[0,0,0.8],'Name','DisModel')
+%global getname
+
+%see if a FaultGeom file exists and open it
+fid = fopen('FaultGeom');
+
+if fid == -1 
+	nf = 1;
+	geom = zeros(1,10);
+else
+	fclose(fid);
+	load FaultGeom -ascii
+	geom = FaultGeom;
+	[nf,nel] = size(geom);
+end
+	nfaults = uicontrol(fig, 'Style', 'edit',  'String', num2str(nf), 'Position', [170 175 50 25]);
+	txt1   = uicontrol(fig, 'Style', 'text',  'String', 'Number of Faults', 'Position', [10 175 150 25]);
+
+
+% DATA FILE NAME
+frm1 = uicontrol(fig, 'Style', 'frame',  'Position',[5 10 215 80]);
+filelabel = uicontrol(fig, 'Style', 'text',  'String','Data Filename', 'Position',[10 50 200 25]);
+getname   = uicontrol(fig, 'Style', 'edit',  'String', 'Data.vel',  'Position', [10 15 200 25]);
+
+% PLOT FILE NAME: CAN'T CHANGE NOW
+frm2 = uicontrol(fig, 'Style', 'frame',  'Position',[225 10 115 80]);
+filelabel2 = uicontrol(fig, 'Style', 'text',  'String','Plot Filename', 'Position',[230 50 100 25]);
+getname2  = uicontrol(fig, 'Style', 'text',  'String', 'test.map',  'Position', [230 15 100 25]);
+
+%SETUP GEOMETRY
+setp =  uicontrol(fig, 'Style', 'push',  'String', 'Setup Geometry', 'Position', [430 125 125 25], 'CallBack','SetupGeom', 'BackgroundColor','white', 'ForegroundColor','black');
+
+
+%LOAD DATA
+distart =  uicontrol(fig, 'Style', 'push',  'String', 'Load Data', 'Position', [430 100 125 25], 'CallBack','LoadData', 'BackgroundColor','white', 'ForegroundColor','black');
+
+%Plot GMT file?
+cb_plt = uicontrol(gcf, 'Style', 'checkbox',  'String', 'Plot', ...
+	'Position', [225 95 115 25]);
+
+origin = [];

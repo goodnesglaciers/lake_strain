@@ -1,0 +1,25 @@
+% Update Fault Geometry
+
+for i=1:nf
+	wid(i) = eval( get(getwid(i),'string') );
+	dep(i) = eval( get(getdep(i),'string') );
+	dip(i) = eval( get(getdip(i),'string') );
+	lat1(i) = eval( get(getlat1(i),'string') );
+	lon1(i) = eval( get(getlon1(i),'string') );
+	lat2(i) = eval( get(getlat2(i),'string') );
+	lon2(i) = eval( get(getlon2(i),'string') );
+	ss(i) = eval( get(getsss(i),'string') );
+	ds(i) = eval( get(getdss(i),'string') );
+	op(i) = eval( get(getops(i),'string') );
+	geom(i,:) = [wid(i),dep(i),dip(i),lat1(i),lon1(i),lat2(i),lon2(i),ss(i),ds(i),op(i)];
+
+	% make lat-long of end of first fault the origin
+	xy_1end(i,:)  = llh2localxy([lat1(i);  lon1(i)], [lat1(1);  lon1(1)]);
+	xy_2end(i,:)  = llh2localxy([lat2(i);  lon2(i)], [lat1(1);  lon1(1)]);
+	len(i) = sqrt(  (xy_1end(i,1) -  xy_2end(i,1) )^2 + (xy_1end(i,2) - xy_2end(i,2) )^2);
+	strik(i) = (180/pi)*atan2((xy_2end(i,2) -  xy_1end(i,2) ), (xy_2end(i,1) -  xy_1end(i,1) )); 
+	delE(i) = xy_1end(i,1) -  xy_1end(1,1) ;
+	delN(i) = xy_1end(i,2) -  xy_1end(1,2);
+	dis_geom(i,:) = [len(i),wid(i),dep(i),dip(i),strik(i),delE(i),delN(i),ss(i),ds(i),op(i)];
+end
+
