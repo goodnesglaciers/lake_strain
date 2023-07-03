@@ -156,8 +156,8 @@ eps_zx = 0.5*(duz_dx+dux_dz); eps_zy = 0.5*(duz_dy+duy_dz); eps_zz = duz_dz;
 % where eps_kk = eps_xx + eps_yy + eps_zz is the volumetric strain
 
 % % shear modulus (mu) middle estimate
-% lambda = 2.25e9; 
-% mu = 1.5e9;
+lambda = 2.25e9; 
+mu = 1.5e9;
 % 
 % % shear modulus (mu) lower estimate
 % lambda = 0.48e9; 
@@ -255,7 +255,9 @@ load apcoords_lle
     llh_lake = [lake(:,5)'; lake(:,4)'; zeros(337,1)'];
     xy_lake = llh2localxy(llh_lake,origin);    
     load BWR.mat
-    load MLE2012_47_range7_gc_20km.mat
+    load out2012.mat
+    patchesB = out2012.patches;
+    patchesC = out2012.patches_C;
     cmin_vert = -0.15; cmax_vert = 0.15;
     cmin_bup = -1.0; cmax_bup = 1.0;
     cmin_bslip = -0.5; cmax_bslip = 0.5;

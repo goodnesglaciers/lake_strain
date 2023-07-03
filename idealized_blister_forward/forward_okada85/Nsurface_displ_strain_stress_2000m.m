@@ -255,7 +255,9 @@ load apcoords_lle
     llh_lake = [lake(:,5)'; lake(:,4)'; zeros(337,1)'];
     xy_lake = llh2localxy(llh_lake,origin);    
     load BWR.mat
-    load MLE2012_47_range7_gc_20km.mat
+        load out2012.mat
+    patchesB = out2012.patches;
+    patchesC = out2012.patches_C;
     cmin_vert = -0.15; cmax_vert = 0.15;
     cmin_bup = -1.0; cmax_bup = 1.0;
     cmin_bslip = -0.5; cmax_bslip = 0.5;
