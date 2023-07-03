@@ -1,6 +1,8 @@
 # lake_strain
 Code repository for creating the figures in Stevens et al. (2023)
 
-/GPS_strain_rates: Figures 4, 5, S2–5.
+/GPS_strain_rates: Figures 4, 5, and S2–5.
 
-/idealized_blister_forward: Figures 3, 10, S5, S6.
+/idealized_blister_forward: Figures 3, 10, S5, and S6.
+
+/NIF_forward: Figures 2, 6, 7, and S1.
