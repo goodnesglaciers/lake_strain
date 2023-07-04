@@ -5,6 +5,6 @@ Code repository for creating the figures in Stevens et al. (2023)
 
 /idealized_blister_forward: Figures 3, 10, S5, and S6.
 
-/NIF_forward: Figures 2, 6, 7, and S1.
+/NIF_forward: Figures 2, 6, 7, 8, and S1.
 
 /NIF_L1A: inversion code for 20 km x 20 km basal plane and vertical plane along L1A hydro-fracture scarp.
