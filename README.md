@@ -34,4 +34,4 @@ Run NIF and create figures in Stevens et al. (202?)
 
 Contact LAS with questions (laura.stevens@earth.ox.ac.uk).
 
-Large (>25 MB) .mat files can be downloaded here (if prefer to not run NIF): https://www.dropbox.com/scl/fo/bbcwl97e8qg0yb9jehusz/h?rlkey=dfclznsaqxzcxtidm9w6gim5j&dl=0
+Large (>25 MB) .mat files may be downloaded here (if prefer to not run NIF): https://www.dropbox.com/scl/fo/bbcwl97e8qg0yb9jehusz/h?rlkey=dfclznsaqxzcxtidm9w6gim5j&dl=0
