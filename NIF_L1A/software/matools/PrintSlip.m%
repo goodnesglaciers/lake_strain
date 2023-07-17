@@ -1,0 +1,30 @@
+        function PrintSlip(slip, sig_slip, nf, nv)
+%
+% Print Slip & Volume Change and Uncertainties to output window
+
+
+	disp('  ')
+	disp('ESTIMATED SLIP')
+	disp('  ')
+
+	for i=1:nf
+	disp(['   Fault Number ', num2str(i)])
+	disp('               Slip         Sigma')
+
+        fprintf(1,'Strike-Slip %8.4f +/-  %8.4f\n', slip(3*(i-1)+1), sig_slip(3*(i-1)+1) )
+        fprintf(1,'Dip-Slip    %8.4f +/-  %8.4f\n',  slip(3*(i-1)+2), sig_slip(3*(i-1)+2) )
+        fprintf(1,'Opening     %8.4f +/-  %8.4f\n',  slip(3*(i-1)+3), sig_slip(3*(i-1)+3) )
+
+
+	disp(' ')
+	end
+
+	counter = 3*(nf-1)+3;
+	for i=1:nv
+	disp(['   Volume Source Number ', num2str(i)])
+	disp('Volume Change         Sigma')
+
+        fprintf(1,'%8.4f +/-  %8.4f\n', slip(counter+i), sig_slip(counter+i))
+
+       	disp(' ')
+	end

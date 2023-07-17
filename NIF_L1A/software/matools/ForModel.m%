@@ -1,0 +1,80 @@
+%  ForModel.m
+%  Script to compute forward dislocation models.
+%  Currently implemented for GPS data only
+%  Paul Segall 1995
+
+%Poisson's ratio
+	nu = 0.25;
+
+%Update fault geometry and station coordinates in local coords
+	UpdateGeom
+        xy = llh2localxy(llh, origin);
+
+
+
+%Plot Geometry in Local Cartesian Coordinates
+        figure
+        plot(xy(:,1), xy(:,2), 'o'), axis('equal'), hold on
+        for i=1:nf
+         displot(dis_geom(i,:))
+        end
+	for i=1:nv
+	 plot( vol_geom(i,1), vol_geom(i,2), 'r*')
+	end
+        title('Geometry in Local Cartesian Coordiantes')
+
+%Compute relative displacements
+	d = vel(:);
+	ndata = length(d);
+	nvec = ndata/3;
+	clear u_rel; u_rel = zeros(3,nvec);
+
+	for i=1:nf
+	  u_rel = u_rel + relative_disp(nu, dis_geom(i,:), xy); 
+	end
+
+	for i=1:nv
+	   u_rel = u_rel + vol_rel_disp(nu, vol_geom(i,:), xy);
+	end
+	
+%weight matrix
+	W = chol(inv(cov));
+
+% compute weighted residual sum of squares
+	dhat = u_rel(:);
+	r = W*(d - dhat);
+	disp(' ')
+	disp('GOODNESS OF FIT')
+	fprintf('Weighted Residual Sum of Squares (WRSS), %g\n', r'*r)
+	fprintf('WRSS / Number of Data, %g\n', (r'*r)/ndata)
+	disp(' ')
+
+% plot observed vectors
+	[a,b,az] = ErrlpsGMT( cov3d2cov2d(cov)  );
+	outmatrix1 = [llh(2,1:nvec)', llh(1,1:nvec)', vel(1,:)', vel(2,:)',a',b',az'];
+
+% plot predicted vectors
+	null = zeros(size(u_rel(1,:)))';
+	outmatrix2 = [llh(2,1:nvec)', llh(1,1:nvec)', u_rel(1,:)', u_rel(2,:)', null,null,null];
+
+	!rm temp.gmtlin
+	!rm volums.gmtlin
+	!rm obs.gmtvec
+	!rm mod.gmtvec
+	save obs.gmtvec outmatrix1 -ascii
+	save mod.gmtvec outmatrix2 -ascii
+
+	for i=1:nf
+	   displot_gmt( geom(i,:), dis_geom(i,:) ) 
+	end
+	
+	if nv >0
+	   volplot_gmt( vgeom ); 
+	end
+
+	if get(cb_plt, 'value') == 1
+		!test.map
+	end
+
+	disp('Done')
+

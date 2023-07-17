@@ -1,0 +1,56 @@
+% pkts.m  Script to Plot Kilauea Time Series
+
+
+% first list the file names
+disp('Files that can be plotted')
+! ls /data/07/owen/arena_hawaii/plots/*.fix.nplot.ps
+
+%%choose the baseline to plot
+disp('Choose the baseline to plot')
+name = input('by entering the 8 character ID  ', 's');
+
+%%load the files into e,n,v,l
+
+fname = ['/data/07/owen/arena_hawaii/plots/',name,'.fix.eplot'];
+eval(['load ' ,fname])
+e = eval(name);
+
+fname = ['/data/07/owen/arena_hawaii/plots/',name,'.fix.nplot'];
+eval(['load ' ,fname])
+n = eval(name);
+
+fname = ['/data/07/owen/arena_hawaii/plots/',name,'.fix.vplot'];
+eval(['load ' ,fname])
+v = eval(name);
+
+fname = ['/data/07/owen/arena_hawaii/plots/',name,'.fix.lplot'];
+eval(['load ' ,fname])
+l = eval(name);
+
+        colorsnew = [0 0 1; 0 0 1];
+
+figure
+        set(gcf,'DefaultAxesColorOrder',colorsnew)
+
+
+subplot(211), errorbar(e(:,1), e(:,2), e(:,3))
+ylabel('east (cm)')
+title(name)
+drawnow
+subplot(212), errorbar(n(:,1), n(:,2), n(:,3))
+ylabel('north (cm)')
+xlabel('year')
+drawnow
+
+figure
+        set(gcf,'DefaultAxesColorOrder',colorsnew)
+
+subplot(211), errorbar(l(:,1), l(:,2), l(:,3))
+ylabel('length (cm)')
+title(name)
+drawnow
+subplot(212), errorbar(v(:,1), v(:,2), v(:,3))
+xlabel('year')
+ylabel('vertical (cm)')
+
+

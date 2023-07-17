@@ -1,0 +1,45 @@
+      subroutine mexFunction(nlhs, plhs, nrhs, prhs)
+      integer plhs(*), prhs(*)
+      integer nlhs, nrhs
+c
+      integer mxGetM, mxGetN, mxGetPr, mxCreateFull
+      integer m
+      integer cov, a, b, azi
+c
+
+c check for proper number of arguments
+c
+      if (nrhs .ne. 1) then
+        call mexErrMsgTxt('ERRLPS requires one input argument')
+      elseif (nlhs .ne. 3) then
+        call mexErrMsgTxt('ERRLPS requires three output arguments')
+      endif
+c
+c Check the dimensions of cov. 
+c
+      m = mxGetM(prhs(1))
+      n = mxGetN(prhs(1))
+c
+      if (m.ne.n) then
+        call mexErrMsgTxt('Input matrix must be square')
+      endif
+c
+c Create  matricies for return arguments
+
+      plhs(1) = mxCreateFull(1,m/2,0)
+      plhs(2) = mxCreateFull(1,m/2,0)
+      plhs(3) = mxCreateFull(1,m/2,0)  
+c
+c Dereference arguments to get array pointers 
+      cov    = mxGetPr(prhs(1))
+      a      = mxGetPr(plhs(1))
+      b      = mxGetPr(plhs(2))
+      azi    = mxGetPr(plhs(3))
+c
+	print *, cov, a, b, azi
+c Call the Computational Routin
+      call errlps( %VAL(cov),m,72,%VAL(a),%VAL(b),%VAL(azi) )
+c
+      return
+      end
+

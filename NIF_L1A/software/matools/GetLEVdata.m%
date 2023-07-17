@@ -1,0 +1,54 @@
+        function [d, llh, Len, sigma, Icov, W] = GetLEVdata(filename)
+%
+% Read LEVELING data files
+%
+% DATA FORMAT IS
+% [Mark Latitiude;  Mark Longitude;  Mark Elevation;  Length of Line; Elevation Change; Sigma;] 
+
+% Output:
+%       d       - vector of elevation changes or rates
+%       llh     - latitude longitude height of level marks
+%       Len     - Distance from reference benchmark to benchmark
+%	sigma	- Vector of standard deviations:  sqrt(diag(cov))
+%       Icov    - Inverse of covariance matrix 
+%	W	- Weight matrix
+
+%  Expressions for Covariance, Inverse of Covariance and
+%  Weight Matrix are given in  Arnadottir, Segall, and Matthews 
+%				1992, BSSA v. 82, p. 2248-2255;
+
+filename = filename(1,:);
+eval(['fopen ',filename]);
+fid = ans;
+
+if ans == -1
+        disp('Could not read file'); disp(filename)
+else
+
+% 	read the data
+	[A, count] = fscanf(fid, '%g %g %g %g %g %g', [6, inf]);
+	nsta = count/6
+
+	A = A';
+        llh = A(2:nsta,1:3)';
+        Len = A(2:nsta,4);
+        d = A(2:nsta,5);
+	s = A(2:nsta,6);
+
+% 	Form weight matrix
+        W = zeros(length(d),length(d));
+
+        W(1,1) = sqrt(1/(s(1)^2*Len(1)));
+
+        for i = 2:length(d);
+        W(i,i) 		= sqrt( 1/( s(i)^2*Len(i) - s(i-1)^2*Len(i-1) ));
+        W(i,i-1) 	= -sqrt( 1/( s(i)^2*Len(i) - s(i-1)^2*Len(i-1) ));
+        end;
+
+%       Form inverse of the covariance matrix
+	Icov = W' * W;
+
+	sigma = s.*sqrt(Len);
+
+        fclose(fid);
+end

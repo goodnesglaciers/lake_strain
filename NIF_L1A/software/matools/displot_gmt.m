@@ -1,0 +1,59 @@
+function  displot_gmt(geom, disgeom) 
+%
+% Plot surface projection of the dislocation using GMT psxy
+% Paul Segall 1995
+%
+%    Input: Dislocation Geometry 
+%		geom(1) = wid = fault width in dip direction (km)
+%		geom(2) = dep = depth of fault bottom (km)
+%		geom(3) = dip = dip angle (degrees)
+%		geom(4) = latitude of one end (decimal degrees)
+%		geom(5) = longitude of one end (decimal degrees)
+%		geom(6) = latitude of second end (decimal degrees)
+%		geom(7) = longitude of second end (decimal degrees)
+%	
+%               disgeom(1) = len = fault length in strike direction (km)
+%               disgeom(2) = wid = fault width in dip direction (km)
+%               disgeom(3) = dep = fault depth (km)
+%               disgeom(4) = dip = dip angle (degrees)
+%               disgeom(5) = strik =  strike, counter clockwise from E (degrees)
+%
+i = sqrt(-1);
+dipr = disgeom(4)*pi/180;
+strkr = disgeom(5)*pi/180;
+%down-dip direction measured from counter-clockwise from Eas
+dipdir = pi - strkr;
+
+
+% radius Rp (Polar) and Rm (Meridianal) in meters
+% N = radius of earth, e = eccentricity
+        N = 6378206.4;
+        e = 1./298.257;
+        W = sqrt(1 -e^2*sin(geom(4)*pi/180));
+        Rp = (N/W)*cos(geom(4)*pi/180);
+        Rm = N*(1-e^2)/W^3;
+
+gll = (geom(4) + i*geom(5));  
+glr = (geom(6) + i*geom(7));
+
+%factor of 1e3 converts km to meters
+horproj = disgeom(2)*cos(dipr)*1.0e3;
+offset = horproj*(i*cos(dipdir)/Rp + sin(dipdir)/Rm)*180/pi;
+% convert offset from radians to degrees
+
+gul = (geom(4) + i*geom(5)) + offset;
+gur = (geom(6) + i*geom(7)) + offset;
+%
+%plot second line just in from the upper edge
+offset2 =  0.9*offset;
+gulm = (geom(4) + i*geom(5)) + offset2;
+gurm = (geom(6) + i*geom(7)) + offset2;
+
+outline = [geom(5), geom(4); geom(7), geom(6); imag(gur), real(gur); imag(gul), real(gul);geom(5), geom(4); imag(gulm), real(gulm); imag(gurm), real(gurm) ];
+
+%save temp.gmtlin outline -ascii
+uo = fopen('temp.gmtlin', 'a');
+fprintf(uo, '>  \n ');
+fprintf(uo, '%12.8f %12.8f\n', outline');
+fclose(uo);
+

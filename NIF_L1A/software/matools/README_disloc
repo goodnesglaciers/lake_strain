@@ -1,0 +1,36 @@
+
+From: "Peter Cervelli" <cervelli@pangea.Stanford.EDU>
+To: "Paul Segall" <segall@mendo.Stanford.EDU>, <jonsson@pangea.Stanford.EDU>,
+        "Roland Burgmann" <burgmann@seismo.berkeley.edu>,
+        "Yosuke Aoki" <aoki@eri.u-tokyo.ac.jp>,
+        "Jessica Murray" <jrmurray@pangea.Stanford.EDU>
+Subject: Bug fix and report for disloc.c
+Date: Thu, 13 Jan 2000 10:10:06 -0800
+MIME-Version: 1.0
+X-Priority: 3
+
+Hello All,
+
+Jessica had been having some bizarre problems with her spatially variable
+slip inversion.  This morning we traced the problem back to a 'bug' in
+disloc.c, which she used to compute her basis functions.  I had included in
+disloc.c a check against unphysical models; such models returned all zeros
+for the displacements.  Under certain unusual circumstances, models that
+seemed physical under matlab were deemed unphysical in compiled C.  I
+believe the reason for this has to do with the number of decimal places
+carried internally.  The gist of the problem is that the compiled C was
+rejecting (and returning zeros for) models that broke the free surface, even
+though the surface 'break' was less than 1e-15 m. As a workaround, I
+implemented a tolerance of 1e-12.  Also, a warning is now issued if disloc.c
+rejects an unphysical model.  (Had I included such a warning before, Jessica
+might have been spared many frustrating hours of work.)
+
+The 'weird' models that caused this problem came out of patchfault.m: they
+were vertical faults with widths equal to their depths, i.e., they came to
+the surface.  The values of width and depth contained 15 non-zero decimal
+places, which I believe was the ultimate root of the problem.
+
+Please delete all old versions of disloc.mexsol (or disloc.dll on windows)
+and replace them with the new version (enclosed).
+
+

@@ -1,0 +1,25 @@
+        function [d, cov, llh] = GetGPSdata(filename)
+%
+% Read GPS solution files
+% Output:
+%	d 	- vector of velocities
+%	cov	- covariance matrix of velocities
+%	llh	- latitude longitude height
+
+filename = filename(1,:);
+
+eval(['fopen ',filename]);
+if ans == -1
+	disp('Could not read file'); disp(filename)
+else
+
+% load data file: NOTE matrdvel returns last station as reference station 
+	[vel,cov,NVEC,llh] = matrdvel(filename);
+	nsta = NVEC+1;
+	llh = llh(:,1:nsta);
+	vel = vel(:,1:NVEC);
+	d = vel(:);
+	cov = cov(1:3*(NVEC),1:3*(NVEC));
+	disp(' Data File Read')
+	fclose(ans);
+end
