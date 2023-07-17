@@ -1,0 +1,25 @@
+      function [sta_index] = GetIndex(sta_list, obs_sta, flag)
+%     function [sta_index] = GetIndex(sta_list, obs_sta, flag)
+%
+% searches through the vector of station names 'sta_list' 
+% to find the one that matches the given station name 'obs_sta'.
+% returns the  index number of the matching component of the 
+% sta_list array.  
+
+
+	[Nsites, four] = size(sta_list);
+	sta_index = 0;
+
+	for k=1:Nsites
+		if obs_sta == sta_list(k,:)
+			sta_index = k;
+		end
+	end
+
+if nargin == 2
+	if    sta_index == 0
+		disp(['station  ',obs_sta,'  not found'])
+	end
+else
+	return
+end

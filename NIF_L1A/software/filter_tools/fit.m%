@@ -1,0 +1,97 @@
+  function [a,b,sig2,tau2,local] = fit(theta, Data)
+%          [a,b,sig2,tau2,local] = fit(theta, Data)
+%% Fit the model : y = linear trend + Brownian + white noise 
+%%
+%% Input:	theta = tau/sigma
+%%		Data  = [t y]
+%%
+%% Output:	   a  = Estimated intercept
+%%		   b  = Estimated slope
+%% 		 sig2 = Estimate of sigma^2
+%% 		 tau2 = Estimate of sigma^2
+%%		local = Estimate of local (Brownian) motion
+	statedim = 3;
+	Big = 10000;
+	t = Data(:,1);y = Data(:,2);
+	n = length(y);
+        t = t - min(t);
+	avec = ones(statedim^2,1);
+	allsigma=zeros(n,statedim^2);
+	allx = zeros(n,statedim);
+%% Time invariant operators:
+	F = eye(statedim);
+	R = 1;
+	Q = zeros(size(F));
+	rsum = 0;
+%% Specify starting (prior) values for state and covariance matrix:
+	sqsigma = sqrt(Big) * eye(statedim);
+	sigma = sqsigma * sqsigma';
+        x = [0;1;0];
+	h = [1 t(1) 1];
+	u = h * sqsigma;
+	yhat = h * x;
+	nu = y(1) - yhat;
+	v = R + u * u';
+	g = sigma * h'/ v;
+	A = eye(statedim) - g * h;
+	x = y(1) * g + A * x;
+	s = zeros(statedim+1,statedim+1);
+	s(1,1) = chol(R)';
+	s(2:(statedim+1),1) = u';
+	s(2:(statedim+1),2:(statedim+1)) = sqsigma';	
+	[q1,r1] = qr(s);
+	sqsigma = r1(2:(statedim+1),2:(statedim+1))';
+	allsigma(1,:) = sigma(avec)';
+	allx(1,:) = x';
+	rsum = rsum + nu/v;
+	for k = 2:n
+%% Time variable operators:
+		Q(3,3) = theta^2 * (t(k) - t(k-1));
+		h = [1 t(k) 1];
+	%% Prediction:
+		x = F * x;
+		sigma = sqsigma * sqsigma';
+		sigma = F * sigma * F' + Q;
+		sqsigma = chol(sigma)';
+	%% Update:
+		u = h * sqsigma;
+		yhat = h * x;
+		nu = y(k) - yhat;
+		v = R + u * u';
+		g = sigma * h'/ v;
+		A = eye(statedim) - g * h;
+		x = y(k) * g + A * x;
+		s = zeros(statedim+1,statedim+1);
+		s(1,1) = chol(R)';
+		s(2:(statedim+1),1) = u';
+		s(2:(statedim+1),2:(statedim+1)) = sqsigma';	
+		[q1,r1] = qr(s);
+		sqsigma = r1(2:(statedim+1),2:(statedim+1))';
+		sigma = sqsigma * sqsigma';
+		allsigma(k,:) = sigma(avec)';
+		allx(k,:) = x';
+		rsum = rsum + nu^2/v;
+	end;
+	sig2 = rsum / n;
+	tau2 = sig2 * theta^2;
+	a = x(1);
+	b = x(2);
+	s = zeros(statedim,statedim);
+	sigmakp1N = sigma';
+	for k = (n-1):-1:1
+		dt = t(k+1) - t(k);
+		Q(3,3) = theta^2 * dt; 
+		sigma(:) = allsigma(k,:);
+		sigmakp1N(:) = allsigma(k+1,:);
+		sigmakp1k = F * sigma * F' + Q;
+		s = sigma * F' * inv(sigmakp1k);
+		sigma = sigma + s * (sigmakp1N - sigmakp1k) * s';
+		x = allx(k,:)'; 
+		xkp1k = F * x;
+		xkp1N = allx(k+1,:)';
+		x = x + s * (xkp1N - xkp1k);
+		allsigma(k,:) = sigma(avec)';
+		allx(k,:) = x';
+	end;
+	local = allx(:,3);
+
