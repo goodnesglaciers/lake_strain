@@ -24,3 +24,6 @@ Run NIF and create figures in Stevens et al. (2023)
 /idealized_blister_forward: 
 
     Figures 4, 10, S5, and S6.
+
+
+Contact LAS with questions (laura.stevens@earth.ox.ac.uk).
