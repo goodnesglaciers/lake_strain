@@ -1,0 +1,7 @@
+
+To store the second moment estimates we're just making a
+structured array
+
+finalests=secmomext(x,elat,elon,edep,L_c,W_c,v0,mv0,tauc)
+
+newest=secmomest
