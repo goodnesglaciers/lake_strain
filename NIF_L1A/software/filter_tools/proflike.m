@@ -1,0 +1,74 @@
+function [val, sig2] = proflike(theta, Data)
+%        [val, sig2] = proflike(theta, Data)
+%% Evaluate :  val = C - 2 * log(L) 
+%%		   where C  (= n - n log n) is a constant and 
+%%                 L is the profile likelihood 
+%%		   for the model y = Linear + Brownian + White noise
+%%
+%% Input:       theta = tau/sigma
+%%              Data  = [t y]
+%%
+%% Output:         val  = C - 2 * log(L)
+	Big = 100/theta;
+	StartLag = 10;
+	t = Data(:,1);y = Data(:,2);
+%%	t = t - t(1);
+	n = length(y);
+%% Specify starting (prior) values for state and covariance matrix:
+	sqsigma = Big * eye(3);
+	sqsigma(3,3) = 0;
+	sigma = sqsigma * sqsigma';
+        x = [0;1;0];
+%% Time invariant operators:
+	F = eye(3);
+	Q = zeros(size(F));
+	R = 1;
+	vsum = 0;
+	rsum = 0;
+	h = [1 t(1) 1];
+	a = h * sqsigma;
+	sqR = chol(R)';
+	yhat = h * x;
+	nu = y(1) - yhat;
+	v = R + a * a';
+	g = sigma * h'/ v;
+	x = x + g * nu;
+	s = zeros(4,4);
+	s(1,1) = sqR;
+	s(2:4,1) = a';
+	s(2:4,2:4) = sqsigma';	
+	[q1,r1] = qr(s);
+	sqsigma = r1(2:4,2:4)';
+	%% Components of likelihood:
+	for k = 2:n
+%% Time variable operators:
+		Q(3,3) = theta^2 * (t(k) - t(k-1));
+		h = [1 t(k) 1];
+	%% Prediction:
+		x = F * x;
+		sigma = sqsigma * sqsigma';
+		sigma = F * sigma * F' + Q;
+		sqsigma = chol(sigma)';
+	%% Update:
+		a = h * sqsigma;
+		sqR = chol(R)';
+		yhat = h * x;
+		nu = y(k) - yhat;
+		v = R + a * a';
+		g = sigma * h'/ v;
+		x = x + g * nu;
+		s = zeros(4,4);
+		s(1,1) = sqR;
+		s(2:4,1) = a';
+		s(2:4,2:4) = sqsigma';	
+		[q1,r1] = qr(s);
+		sqsigma = r1(2:4,2:4)';
+	%% Components of likelihood:
+		if (k > StartLag)
+			rsum = rsum + nu^2 / v;
+			vsum = vsum + log(v);
+		end;
+	end;
+	val = (n - StartLag) * log(rsum) + vsum;
+	sig2 = rsum/(n - StartLag);
+

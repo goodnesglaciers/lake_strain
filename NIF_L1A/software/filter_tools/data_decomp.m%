@@ -1,0 +1,52 @@
+function data_decomp(t, Data, G, slip, x, index)
+
+%  data_decomp(Data, dhat, L, index)
+%
+%  plot data decomposition
+%	Input:
+%		Data	= Data series
+%		dhat	= predicted data
+%		L	= Local motion
+%		index 	= baseline to plot
+%
+%% Compute Predicted Data
+
+	[Nsites, Nbasis] = size(G);
+	Nepochs = length(t);
+	statedim = 3*Nbasis+Nsites;
+	dhat = zeros(Nsites,Nepochs);
+
+	for k = 1:Nepochs
+       	 dhat(:,k) = G*slip(:,k);
+	end
+
+%% Compute Local Benchmark Motion
+	L = zeros(Nsites,Nepochs);
+	for k = 1:Nepochs
+        	L(:,k) = x(k,3*Nbasis+1:statedim)';
+	end
+
+%% Compute white noise
+%%	white = Data(index,:) - dhat(index,:) - L(index,:);
+	white = Data - dhat  - L ;
+
+
+	figure
+	subplot(211), plot(t, Data(index,:), 'bo', ...
+		t, dhat(index,:), 'r-',t,L(index,:),'g--',t,white(index,:),'m+')
+%%	legend('Data','Signal','Local','Error')
+	hold on
+	plot(t,Data(index,:),'b')
+	xlabel('Time (yrs)')
+	ylabel('Displacement (mm)')
+	title('Data Decomposition')
+	
+	index = index+1;
+	subplot(212), plot(t, Data(index,:), 'bo', ...
+		t, dhat(index,:), 'r-',t,L(index,:),'g--',t,white(index,:),'m+')
+	legend('Data','Signal','Local','Error')
+	hold on
+	plot(t,Data(index,:),'b')
+	xlabel('Time (yrs)')
+	ylabel('Displacement (mm)')
+	

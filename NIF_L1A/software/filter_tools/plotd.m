@@ -1,0 +1,33 @@
+  function plotd(t,d)
+%% function plotd(t,d)
+%% 
+%%	Plot data so lines don't overlap
+%%	Modified to work with incomplete data
+%%
+%%	Input:
+%%			t = vector of times
+%%			d = matrix of obsrvations
+%%	
+
+	[Nsites,Nepochs] = size(d);
+	for i = 1:Nsites
+		j =1;
+		while isnan(d(i,j)) == 1;
+			j = j+1;
+		end
+		d(i,:) = d(i,:) - d(i,j)*ones(1,Nepochs) ;
+	end
+
+
+	dp = zeros(size(d));
+	dp(1,:) = d(1,:);
+	for k=2:Nsites
+	dp(k,:) = d(k,:) + max( stripnan(dp(k-1,:))) - min( stripnan(d(k,:)));
+	end
+	
+	plot(t,dp)
+	hold on
+	plot(t,dp,'+')
+
+	xlabel('Time (years)')
+	ylabel('Displalecement (m)')

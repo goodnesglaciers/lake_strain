@@ -1,0 +1,30 @@
+%%
+	function [outmatrix] = plotvels(Ep, Np, t, t0, tf, llh)
+
+%% To get predicted average velocities
+
+	[Nsites, oner] = size(Ep);
+
+% find the indicies of the closest matching times
+
+	[Y, ind2] = min(  abs(t -tf) );
+	[Y, ind1] = min(  abs(t -t0) );
+
+% Difference the coordinates and divide to form average velocity;
+
+	Ve  = (Ep(:,ind2) - Ep(:, ind1) )/(tf - t0);
+	Vn  = (Np(:,ind2) - Np(:, ind1) )/(tf - t0);
+
+
+%% Need to plot in GMT format
+
+
+% Plot predicted vectors
+        null = zeros(size(Ve));
+        outmatrix = [llh(2,1:Nsites)', llh(1,1:Nsites)', 1000 * Ve , ...
+                 1000 * Vn, null, null, null];
+ 
+
+
+
+%% Done
