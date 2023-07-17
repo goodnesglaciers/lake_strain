@@ -1,0 +1,31 @@
+figure
+fig = gcf;
+%global dip len wid dep strik delE delN ss ds op
+%global xmin xmax ymin ymax
+
+% Set Initial Parameters to Display
+dip = +89.9;len = 55.0;wid = 10.0;dep = 10.0;ss = -1;ds = 0;op = 0;strik = -55.58;
+delE = 50;delN = 0;
+xmin = 30; xmax = 100; ymin = -100; ymax = 20;
+
+multilabels = uicontrol(fig, 'Style', 'edit',  'String','Length|Width|Depth|Dip|Strike|X_E|X_N|Strike-slip|Dip-slip|Open', 'Position', [10 200 75 180], 'Max', 2);
+getlen = uicontrol(fig, 'Style', 'edit',  'String', num2str(len), 'Position', [95 362 75 16]);
+getwid = uicontrol(fig, 'Style', 'edit',  'String', num2str(wid), 'Position', [95 346 75 16]);
+getdep = uicontrol(fig, 'Style', 'edit',  'String', num2str(dep), 'Position', [95 330 75 16]);
+getdip = uicontrol(fig, 'Style', 'edit',  'String', num2str(dip), 'Position', [95 314 75 16]);
+getstr = uicontrol(fig, 'Style', 'edit',  'String', num2str(strik), 'Position', [95 298 75 16]);
+getdle = uicontrol(fig, 'Style', 'edit',  'String', num2str(delE), 'Position', [95 282 75 16]);
+getdln = uicontrol(fig, 'Style', 'edit',  'String', num2str(delN), 'Position', [95 266 75 16]);
+getsss = uicontrol(fig, 'Style', 'edit',  'String', num2str(ss), 'Position', [95 250 75 16]);
+getdss = uicontrol(fig, 'Style', 'edit',  'String', num2str(ds), 'Position', [95 234 75 16]);
+getops = uicontrol(fig, 'Style', 'edit',  'String', num2str(op), 'Position', [95 218 75 16]);
+%
+multilabels = uicontrol(fig, 'Style', 'edit',  'String','X_min|X_max|Y_min|Y_max', 'Position', [10 10 50 80], 'Max', 2);
+getxmin = uicontrol(fig, 'Style', 'edit',  'String', num2str(xmin), 'Position', [60 74 50 16]);
+getxmax = uicontrol(fig, 'Style', 'edit',  'String', num2str(xmax), 'Position', [60 58 50 16]);
+getymin = uicontrol(fig, 'Style', 'edit',  'String', num2str(ymin), 'Position', [60 42 50 16]);
+getymax = uicontrol(fig, 'Style', 'edit',  'String', num2str(ymax), 'Position', [60 26 50 16]);
+
+%
+distart1 =  uicontrol(fig, 'Style', 'push',  'String', 'Run Grids', 'Position', [300 360 100 25], 'CallBack','disrun', 'BackgroundColor','white', 'ForegroundColor','red');
+distart2 =  uicontrol(fig, 'Style', 'push',  'String', 'Help Geometry', 'Position', [300 260 100 25], 'CallBack','help_geom1', 'BackgroundColor','white', 'ForegroundColor','red');

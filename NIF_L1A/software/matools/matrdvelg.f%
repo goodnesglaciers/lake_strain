@@ -1,0 +1,69 @@
+c
+c
+c  matrdvelg.f - Gateway function for matrdvel.f
+c
+c
+      subroutine mexFunction(nlhs, plhs, nrhs, prhs)
+      integer plhs(*), prhs(*) 
+      integer nlhs, nrhs
+c
+      integer maxvec
+      parameter(maxvec=100)
+
+      integer mxCreateFull, mxGetPr
+      integer nvec, vel, outcov, llh
+      character*150 fname
+
+c
+c---------------------------------------------------------------------
+c
+
+c
+c  Check for proper number of arguments
+c
+      if (nrhs .ne. 1) then
+        call mexErrMsgTxt('one input arguments required')
+      elseif (nlhs .gt. 4) then
+        call mexErrMsgTxt('matrdvel requires 4 output arguments')
+      endif
+
+c
+c  Check that input is a string
+c
+      ians=mxisstring(prhs(1))
+      if(ians.ne.1)then               !not a string
+         CALL MEXERRMSGTXT('argument must be a string')
+      endif
+      ilen=mxgetn(prhs(1))
+      i=mxGetString(prhs(1),fname,ilen)
+
+c
+c     Create matrices for the return arguments
+
+c     ...vel
+      plhs(1) = mxCreateFull(3,maxvec-1,0)
+
+c     ...outcov
+      plhs(2) = mxCreateFull(3*(maxvec-1), 3*(maxvec-1),0)
+
+c     ...nvec
+      plhs(3) = mxCreateFull(1,1,0)
+
+c     ...llh
+      plhs(4) = mxCreateFull(3,maxvec+1,0)
+
+c     Deference arguments to get array pointers
+      vel = mxGetPr(plhs(1))
+      outcov = mxGetPr(plhs(2))
+      nvec = mxGetPr(plhs(3))
+      llh  = mxGetPr(plhs(4))
+
+c
+c     Call the computational routine
+c
+      call matrdvel(fname, %VAL(vel), %VAL(outcov),
+     +                %VAL(nvec), %VAL(llh))
+
+      return
+      end
+
