@@ -1,5 +1,5 @@
 # lake_strain
-Run NIF and create figures in Stevens et al. (2023)
+Run NIF and create figures in Stevens et al. (202?)
 
 
 /GPS_strain_rates: 
