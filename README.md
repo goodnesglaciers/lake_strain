@@ -15,7 +15,7 @@ Run NIF and create figures in Stevens et al. (202?)
     
     Figure 2. 
     
-    Creates files needed to make Figures in /NIF_forward. 
+    creates files needed to make Figures in /NIF_forward. 
 
 
 /NIF_forward: 
