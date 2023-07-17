@@ -626,7 +626,7 @@ set(gca,'xtick',[168.5,169,169.5,170]);
 ylabel('$\dot{\epsilon}_{yy}\  [\ yr^{-1}\ ]$', 'Interpreter','latex','FontSize',16,'FontName','Avenir');
 xlabel(' Day of Year, 2011 ','FontSize',12,'FontName','Avenir');  grid on;
 
-%print(gcf,'-dpng','-r500','paperfig4_strainrate_2011_20230628.png');
+print(gcf,'-dpng','-r500','paperfig5_strainrate_2011_20230628.png');
 
 %% ERROR IN STRAIN RATE 2011 L1A-L1C
 Fig3 = figure(3); clf; 
@@ -1081,7 +1081,7 @@ legend('NL01-NL09','NL01-FL04','NL02-FL04'); legend boxoff
 
 ylim([-0.22 0.4]); 
 xlim([168.32 170.32]);
-text(168.33, 0.44, '{\bf d. L1A-L1C} (Compare with Fig. 4d.)','FontSize',12); 
+text(168.33, 0.44, '{\bf d. L1A-L1C} (Compare with Fig. 5d.)','FontSize',12); 
 
 text(168.81,0.06,'Start of Precursor','Rotation',90,'FontSize',10);
 text(169.17,0.06,'HF Initiation','Rotation',90,'FontSize',10);
@@ -1110,7 +1110,7 @@ legend('NL06-NL08','NL04-NL09','NL04-FL04','NL07-FL04'); legend boxoff
 ylim([-0.22 0.4]); 
 xlim([168.32 170.32]);
 
-text(168.33, 0.44, '{\bf e. L1A} (Same as Fig. 4e.)','FontSize',12); 
+text(168.33, 0.44, '{\bf e. L1A} (Same as Fig. 5e.)','FontSize',12); 
 set(gca,'tickdir','in','LineWidth',1.1,'FontSize',12,'ytick',[-0.2:0.1:0.4],'FontName','Avenir'); grid on;
 set(gca,'xtick',[168.5,169,169.5,170]);
 ylabel('$\dot{\epsilon}_{xx}\  [\ yr^{-1}\ ]$', 'Interpreter','latex','FontSize',16,'FontName','Avenir');
@@ -1127,7 +1127,7 @@ plot([170.32 170.32], [-100 100], 'k','LineWidth',1,'Color',[0.4 0.4 0.4]);
 lgd = legend('NL06-NL10','NL04-NL11','Location','NorthEast'); legend boxoff
 ylim([-0.22 0.4]); 
 xlim([168.32 170.32]);
-text(168.33, 0.44, '{\bf f. L1A-L1B} (Compare with Fig. 4f)','FontSize',12)
+text(168.33, 0.44, '{\bf f. L1A-L1B} (Compare with Fig. 5f)','FontSize',12)
 set(gca,'tickdir','in','LineWidth',1.1,'FontSize',12,'ytick',[-0.6:0.1:0.6],'FontName','Avenir');
 set(gca,'xtick',[168.5,169,169.5,170]);
 ylabel('$\dot{\epsilon}_{xx}\  [\ yr^{-1}\ ]$', 'Interpreter','latex','FontSize',16,'FontName','Avenir');
@@ -1161,7 +1161,7 @@ text(170.32-0.08,-0.18,'\it{t}_{4}','Rotation',0,'FontSize',11,'FontName','Aveni
 ylim([-0.22 0.4]); 
 xlim([168.32 170.32]);
 
-text(168.33, 0.44, '{\bf g. L1A-L1C} (Compare with Fig. 4g.)','FontSize',12)
+text(168.33, 0.44, '{\bf g. L1A-L1C} (Compare with Fig. 5g.)','FontSize',12)
 set(gca,'tickdir','in','LineWidth',1.1,'FontSize',12,'ytick',[-0.2:0.1:0.6],'FontName','Avenir'); grid on;
 set(gca,'xtick',[168.5,169,169.5,170]);
 ylabel('$\dot{\epsilon}_{yy}\  [\ yr^{-1}\ ]$', 'Interpreter','latex','FontSize',16,'FontName','Avenir');
@@ -1182,7 +1182,7 @@ legend('NL04-NL08','NL06-NL09','NL04-NL09','NL06-NL08'); legend boxoff
 ylim([-0.22 0.4]); 
 xlim([168.32 170.32]);
 
-text(168.33, 0.44, '{\bf h. L1A} (Same as Fig. 4h.)','FontSize',12) 
+text(168.33, 0.44, '{\bf h. L1A} (Same as Fig. 5h.)','FontSize',12) 
 set(gca,'tickdir','in','LineWidth',1.1,'FontSize',12,'ytick',[-0.2:0.1:0.6],'FontName','Avenir'); grid on;
 set(gca,'xtick',[168.5,169,169.5,170]);
 ylabel('$\dot{\epsilon}_{yy}\  [\ yr^{-1}\ ]$', 'Interpreter','latex','FontSize',16,'FontName','Avenir');
@@ -1201,7 +1201,7 @@ lgd = legend('NL06-NL10','NL04-NL11','NL04-NL13','Location','NorthEast'); legend
 set(lgd,'Position',[0.89 0.27 0.1 0.05]);
 ylim([-0.22 0.4]); 
 xlim([168.32 170.32]);
-text(168.33, 0.44, '{\bf i. L1A-L1B}  (Compare with Fig. 4i.)','FontSize',12)
+text(168.33, 0.44, '{\bf i. L1A-L1B}  (Compare with Fig. 5i.)','FontSize',12)
 set(gca,'tickdir','in','LineWidth',1.1,'FontSize',12,'ytick',[-0.6:0.1:0.6],'FontName','Avenir');
 set(gca,'xtick',[168.5,169,169.5,170]);
 ylabel('$\dot{\epsilon}_{yy}\  [\ yr^{-1}\ ]$', 'Interpreter','latex','FontSize',16,'FontName','Avenir');
