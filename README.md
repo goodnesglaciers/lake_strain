@@ -1,5 +1,5 @@
 # lake_strain
-Code repository for creating the figures in Stevens et al. (2023)
+Run NIF and create figures in Stevens et al. (2023)
 
 /GPS_strain_rates: 
     Figures 5, 6, and S2–5.
