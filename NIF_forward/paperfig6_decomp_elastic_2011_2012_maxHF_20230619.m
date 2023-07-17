@@ -616,7 +616,6 @@ plot(xy_NNL_crack(:,1),xy_NNL_crack(:,2),'y-','LineWidth',2.5)
 caxis([-1000 1000]);
 colormap(axe17,BWR); 
 text(-5.5, 5.5, 'e','FontSize',9,'FontWeight','bold');
-set(gca,'FontName','Avenir');
 xlabel(' x [ km ]','FontSize',8,'FontName','Avenir');
 ylabel(' y [ km ]','FontSize',8,'FontName','Avenir'); 
 xlim([-6 6]); ylim([-6 6])
