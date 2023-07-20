@@ -36,7 +36,7 @@ print(gcf,'-dpng','-r600',figurename);
 %% convert blister opening to NIF input geometry 
 % what we would be able to resolve with an equivalent GPS array
 load('../forward_okada85/Gsurface500m_strain.mat') % load to get patch locations
-patchesB = Gsurface500.patchesB;
+patchesB = Gsurface.patchesB;
 spacing = (patchesB(1,1)).*1e3 % [ +500 m ] 
 half_spacing = spacing./2 % [ +250 m ] 
 patches_center(:,1) = (patchesB(:,6).*1e3) + half_spacing; % [ m ] patch extends in -x direction

@@ -155,9 +155,9 @@ eps_zx = 0.5*(duz_dx+dux_dz); eps_zy = 0.5*(duz_dy+duy_dz); eps_zz = duz_dz;
 % sigma_ij = lambda * delta_ij * eps_kk + 2*mu*eps_ij
 % where eps_kk = eps_xx + eps_yy + eps_zz is the volumetric strain
 
-% shear modulus (mu) middle estimate
-% lambda = 2.25e9; 
-% mu = 1.5e9;
+%shear modulus (mu) middle estimate
+lambda = 2.25e9; 
+mu = 1.5e9;
 
 % shear modulus (mu) lower estimate
 % lambda = 0.48e9; 

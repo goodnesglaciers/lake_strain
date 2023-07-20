@@ -85,7 +85,7 @@ Nsurface=length(xy_surf);
 depthc = [0.50:0.25:3.00]; % [ km ] DEPTH OF BEDPLANE
 
 % % output G matrices strains  500m
-[patchesB, G2bv, G3bv, G2bv_strain, G3bv_strain]=makegeom_20km_bed(ts_enu,origin,depthc(1));
+[patchesB, G2bv, G3bv, G2bv_strain, G3bv_strain]=makegeom_20km_bed(origin,depthc(1));
 Gsurface.G2bv = G2bv; Gsurface.G3bv = G3bv;
 Gsurface.G2bv_strain = G2bv_strain; Gsurface.G3bv_strain = G3bv_strain;
 Gsurface.xy_surf = xy_surf; Gsurface.xx = xx; Gsurface.yy = yy;
@@ -93,7 +93,7 @@ Gsurface.patchesB = patchesB; Gsurface.Nsurface = Nsurface;
 save('Gsurface500m_strain.mat', 'Gsurface', '-v7.3'); 
 
 % % output G matrices strains  750m
-[patchesB, G2bv, G3bv, G2bv_strain, G3bv_strain]=makegeom_20km_bed(ts_enu,origin,depthc(2));
+[patchesB, G2bv, G3bv, G2bv_strain, G3bv_strain]=makegeom_20km_bed(origin,depthc(2));
 Gsurface.G2bv = G2bv; Gsurface.G3bv = G3bv;
 Gsurface.G2bv_strain = G2bv_strain; Gsurface.G3bv_strain = G3bv_strain;
 Gsurface.xy_surf = xy_surf; Gsurface.xx = xx; Gsurface.yy = yy;
@@ -101,7 +101,7 @@ Gsurface.patchesB = patchesB; Gsurface.Nsurface = Nsurface;
 save('Gsurface750m_strain.mat', 'Gsurface', '-v7.3'); 
 
 % output G matrices strains  1000m
-[patchesB, G2bv, G3bv, G2bv_strain, G3bv_strain]=makegeom_20km_bed(ts_enu,origin,depthc(3));
+[patchesB, G2bv, G3bv, G2bv_strain, G3bv_strain]=makegeom_20km_bed(origin,depthc(3));
 Gsurface.G2bv = G2bv; Gsurface.G3bv = G3bv;
 Gsurface.G2bv_strain = G2bv_strain; Gsurface.G3bv_strain = G3bv_strain;
 Gsurface.xy_surf = xy_surf; Gsurface.xx = xx; Gsurface.yy = yy;
@@ -117,7 +117,7 @@ Gsurface.patchesB = patchesB; Gsurface.Nsurface = Nsurface;
 save('Gsurface1250m_strain.mat', 'Gsurface', '-v7.3'); 
 
 % output G matrices strains  1500m
-[patchesB, G2bv, G3bv, G2bv_strain, G3bv_strain]=makegeom_20km_bed(ts_enu,origin,depthc(5));
+[patchesB, G2bv, G3bv, G2bv_strain, G3bv_strain]=makegeom_20km_bed(origin,depthc(5));
 Gsurface.G2bv = G2bv; Gsurface.G3bv = G3bv;
 Gsurface.G2bv_strain = G2bv_strain; Gsurface.G3bv_strain = G3bv_strain;
 Gsurface.xy_surf = xy_surf; Gsurface.xx = xx; Gsurface.yy = yy;
@@ -125,7 +125,7 @@ Gsurface.patchesB = patchesB; Gsurface.Nsurface = Nsurface;
 save('Gsurface1500m_strain.mat', 'Gsurface', '-v7.3'); 
 
 % output G matrices strains  1750m
-[patchesB, G2bv, G3bv, G2bv_strain, G3bv_strain]=makegeom_20km_bed(ts_enu,origin,depthc(6));
+[patchesB, G2bv, G3bv, G2bv_strain, G3bv_strain]=makegeom_20km_bed(origin,depthc(6));
 Gsurface.G2bv = G2bv; Gsurface.G3bv = G3bv;
 Gsurface.G2bv_strain = G2bv_strain; Gsurface.G3bv_strain = G3bv_strain;
 Gsurface.xy_surf = xy_surf; Gsurface.xx = xx; Gsurface.yy = yy;
@@ -133,7 +133,7 @@ Gsurface.patchesB = patchesB; Gsurface.Nsurface = Nsurface;
 save('Gsurface1750m_strain.mat', 'Gsurface', '-v7.3'); 
 
 % output G matrices strains  2000m
-[patchesB, G2bv, G3bv, G2bv_strain, G3bv_strain]=makegeom_20km_bed(ts_enu,origin,depthc(7));
+[patchesB, G2bv, G3bv, G2bv_strain, G3bv_strain]=makegeom_20km_bed(origin,depthc(7));
 Gsurface.G2bv = G2bv; Gsurface.G3bv = G3bv;
 Gsurface.G2bv_strain = G2bv_strain; Gsurface.G3bv_strain = G3bv_strain;
 Gsurface.xy_surf = xy_surf; Gsurface.xx = xx; Gsurface.yy = yy;
@@ -141,7 +141,7 @@ Gsurface.patchesB = patchesB; Gsurface.Nsurface = Nsurface;
 save('Gsurface2000m_strain.mat', 'Gsurface', '-v7.3'); 
 
 % output G matrices strains  2250m
-[patchesB, G2bv, G3bv, G2bv_strain, G3bv_strain]=makegeom_20km_bed(ts_enu,origin,depthc(8));
+[patchesB, G2bv, G3bv, G2bv_strain, G3bv_strain]=makegeom_20km_bed(origin,depthc(8));
 Gsurface.G2bv = G2bv; Gsurface.G3bv = G3bv;
 Gsurface.G2bv_strain = G2bv_strain; Gsurface.G3bv_strain = G3bv_strain;
 Gsurface.xy_surf = xy_surf; Gsurface.xx = xx; Gsurface.yy = yy;
@@ -149,7 +149,7 @@ Gsurface.patchesB = patchesB; Gsurface.Nsurface = Nsurface;
 save('Gsurface2250m_strain.mat', 'Gsurface', '-v7.3'); 
 
 % output G matrices strains  2500m
-[patchesB, G2bv, G3bv, G2bv_strain, G3bv_strain]=makegeom_20km_bed(ts_enu,origin,depthc(9));
+[patchesB, G2bv, G3bv, G2bv_strain, G3bv_strain]=makegeom_20km_bed(origin,depthc(9));
 Gsurface.G2bv = G2bv; Gsurface.G3bv = G3bv;
 Gsurface.G2bv_strain = G2bv_strain; Gsurface.G3bv_strain = G3bv_strain;
 Gsurface.xy_surf = xy_surf; Gsurface.xx = xx; Gsurface.yy = yy;
@@ -157,7 +157,7 @@ Gsurface.patchesB = patchesB; Gsurface.Nsurface = Nsurface;
 save('Gsurface2500m_strain.mat', 'Gsurface', '-v7.3'); 
 
 % output G matrices strains  2750m
-[patchesB, G2bv, G3bv, G2bv_strain, G3bv_strain]=makegeom_20km_bed(ts_enu,origin,depthc(10));
+[patchesB, G2bv, G3bv, G2bv_strain, G3bv_strain]=makegeom_20km_bed(origin,depthc(10));
 Gsurface.G2bv = G2bv; Gsurface.G3bv = G3bv;
 Gsurface.G2bv_strain = G2bv_strain; Gsurface.G3bv_strain = G3bv_strain;
 Gsurface.xy_surf = xy_surf; Gsurface.xx = xx; Gsurface.yy = yy;
@@ -165,7 +165,7 @@ Gsurface.patchesB = patchesB; Gsurface.Nsurface = Nsurface;
 save('Gsurface2750m_strain.mat', 'Gsurface', '-v7.3'); 
 
 % output G matrices strains  3000m
-[patchesB, G2bv, G3bv, G2bv_strain, G3bv_strain]=makegeom_20km_bed(ts_enu,origin,depthc(11));
+[patchesB, G2bv, G3bv, G2bv_strain, G3bv_strain]=makegeom_20km_bed(origin,depthc(11));
 Gsurface.G2bv = G2bv; Gsurface.G3bv = G3bv;
 Gsurface.G2bv_strain = G2bv_strain; Gsurface.G3bv_strain = G3bv_strain;
 Gsurface.xy_surf = xy_surf; Gsurface.xx = xx; Gsurface.yy = yy;

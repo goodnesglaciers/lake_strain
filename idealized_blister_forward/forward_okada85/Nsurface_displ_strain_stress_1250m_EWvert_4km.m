@@ -61,9 +61,9 @@ for j=1:length(bed_crack_slip_m(:,1))
 end
 
 % linear elastic: add all sources of displacement
-Disp_E_openslip =  B_G2bv_E + B_G3bv_E ;
-Disp_N_openslip =  B_G2bv_N + B_G3bv_N ;
-Disp_U_openslip =  B_G2bv_U + B_G3bv_U ;
+Disp_E =  B_G2bv_E + B_G3bv_E ;
+Disp_N =  B_G2bv_N + B_G3bv_N ;
+Disp_U =  B_G2bv_U + B_G3bv_U ;
 
 Disp_E_vertopenslip =  B_G3v_E + B_G2bv_E + B_G3bv_E ;
 Disp_N_vertopenslip =  B_G3v_N + B_G2bv_N + B_G3bv_N ;
@@ -82,9 +82,9 @@ Disp_N_slip =   B_G2bv_N ;
 Disp_U_slip =   B_G2bv_U ;
 
 %% save displacement timeseries
-surface_disp_1250m.Disp_E_openslip = Disp_E_openslip;
-surface_disp_1250m.Disp_N_openslip = Disp_N_openslip;
-surface_disp_1250m.Disp_U_openslip = Disp_U_openslip;
+surface_disp_1250m.Disp_E = Disp_E;
+surface_disp_1250m.Disp_N = Disp_N;
+surface_disp_1250m.Disp_U = Disp_U;
 surface_disp_1250m.Disp_E_vertopenslip = Disp_E_vertopenslip;
 surface_disp_1250m.Disp_N_vertopenslip = Disp_N_vertopenslip;
 surface_disp_1250m.Disp_U_vertopenslip = Disp_U_vertopenslip;
@@ -154,7 +154,7 @@ end
 % linear elastic: add all sources of strain 
 NU = 0.3; % Poisson ratio
 
-% bed open and bed slip
+% bed open and bed slip and vertical crack opening
 duz_dx_vertopenslip =  (B_G3bv_uZE + B_G2bv_uZE + B_G3v_uZE)./1e3; % u in m but dx is in km
 duz_dy_vertopenslip =  (B_G3bv_uZN + B_G2bv_uZN + B_G3v_uZN)./1e3;
 dux_dx_vertopenslip =  (B_G3bv_uEE + B_G2bv_uEE + B_G3v_uEE)./1e3;
@@ -165,7 +165,7 @@ dux_dz_vertopenslip =  (-1.*duz_dx_vertopenslip); % From free surface boundary c
 duy_dz_vertopenslip =  (-1.*duz_dy_vertopenslip); % From free surface boundary condition (strain_yz = 0 at the surface)
 duz_dz_vertopenslip =  (-1.*(dux_dx_vertopenslip + duy_dy_vertopenslip).*(NU/(1-NU))); % From free surface boundary condition (stress_zz = 0 at the surface)
 
-% bed open and bed slip and vertical crack opening
+% bed open and bed slip
 duz_dx =  (B_G3bv_uZE + B_G2bv_uZE)./1e3; % u in m but dx is in km
 duz_dy =  (B_G3bv_uZN + B_G2bv_uZN)./1e3;
 dux_dx =  (B_G3bv_uEE + B_G2bv_uEE)./1e3;
@@ -209,7 +209,8 @@ dux_dz_vert =  (-1.*duz_dx_vert); % From free surface boundary condition (strain
 duy_dz_vert =  (-1.*duz_dy_vert); % from tilts to strains; see okada85.m header
 duz_dz_vert =  (-1.*(dux_dx_vert + duy_dy_vert).*(NU/(1-NU))); % From free surface boundary condition (stress_zz = 0 at the surface)
 
-%% (Infinitesimal) strain tensor at the surface (SL)
+%% Strains and stresses for bed open + bed slip
+% (Infinitesimal) strain tensor at the surface (SL)
 % eps_ij = 0.5*(dui_dj + duj_di)
 % eps is short for epsilon
 
@@ -217,7 +218,7 @@ eps_xx = dux_dx; eps_xy = 0.5*(dux_dy+duy_dx); eps_xz = 0.5*(dux_dz+duz_dx);
 eps_yx = 0.5*(duy_dx+dux_dy); eps_yy = duy_dy; eps_yz = 0.5*(duy_dz+duz_dy);
 eps_zx = 0.5*(duz_dx+dux_dz); eps_zy = 0.5*(duz_dy+duy_dz); eps_zz = duz_dz;
 
-%% Stress tensor at the surface
+% Stress tensor at the surface
 % sigma_ij = lambda * delta_ij * eps_kk + 2*mu*eps_ij
 % where eps_kk = eps_xx + eps_yy + eps_zz is the volumetric strain
 
@@ -239,51 +240,36 @@ sigma_xx = lambda*eps_kk+2*mu*eps_xx; sigma_xy = 2*mu*eps_xy; sigma_xz = 2*mu*ep
 sigma_yx = 2*mu*eps_yx; sigma_yy = lambda*eps_kk+2*mu*eps_yy; sigma_yz = 2*mu*eps_yz;
 sigma_zx = 2*mu*eps_zx; sigma_zy = 2*mu*eps_zy; sigma_zz = lambda*eps_kk+2*mu*eps_zz;
 
-%% Bed slip only 
-% (Infinitesimal) strain tensor at the surface (SL)
-% eps_ij = 0.5*(dui_dj + duj_di)
-% eps is short for epsilon
+%% Strains and stresses for bed slip only:
+
 eps_xx_slip = dux_dx_slip; eps_xy_slip = 0.5*(dux_dy_slip+duy_dx_slip); eps_xz_slip = 0.5*(dux_dz_slip+duz_dx_slip);
 eps_yx_slip = 0.5*(duy_dx_slip+dux_dy_slip); eps_yy_slip = duy_dy_slip; eps_yz_slip = 0.5*(duy_dz_slip+duz_dy_slip);
 eps_zx_slip = 0.5*(duz_dx_slip+dux_dz_slip); eps_zy_slip = 0.5*(duz_dy_slip+duy_dz_slip); eps_zz_slip = duz_dz_slip;
 
-% Stress tensor at the surface
-% sigma_ij = lambda * delta_ij * eps_kk + 2*mu*eps_ij
-% where eps_kk = eps_xx + eps_yy + eps_zz is the volumetric strain
 eps_kk_slip = eps_xx_slip + eps_yy_slip + eps_zz_slip; 
 
 sigma_xx_slip = lambda*eps_kk_slip+2*mu*eps_xx_slip; sigma_xy_slip = 2*mu*eps_xy_slip; sigma_xz_slip = 2*mu*eps_xz_slip;
 sigma_yx_slip = 2*mu*eps_yx_slip; sigma_yy_slip = lambda*eps_kk_slip+2*mu*eps_yy_slip; sigma_yz_slip = 2*mu*eps_yz_slip;
 sigma_zx_slip = 2*mu*eps_zx_slip; sigma_zy_slip = 2*mu*eps_zy_slip; sigma_zz_slip = lambda*eps_kk_slip+2*mu*eps_zz_slip;
 
-%% Bed open only 
-% (Infinitesimal) strain tensor at the surface (SL)
-% eps_ij = 0.5*(dui_dj + duj_di)
-% eps is short for epsilon
+%% Strains and stresses for bed open only:
+
 eps_xx_open = dux_dx_open; eps_xy_open = 0.5*(dux_dy_open+duy_dx_open); eps_xz_open = 0.5*(dux_dz_open+duz_dx_open);
 eps_yx_open = 0.5*(duy_dx_open+dux_dy_open); eps_yy_open = duy_dy_open; eps_yz_open = 0.5*(duy_dz_open+duz_dy_open);
 eps_zx_open = 0.5*(duz_dx_open+dux_dz_open); eps_zy_open = 0.5*(duz_dy_open+duy_dz_open); eps_zz_open = duz_dz_open;
 
-% Stress tensor at the surface
-% sigma_ij = lambda * delta_ij * eps_kk + 2*mu*eps_ij
-% where eps_kk = eps_xx + eps_yy + eps_zz is the volumetric strain
 eps_kk_open = eps_xx_open + eps_yy_open + eps_zz_open; 
 
 sigma_xx_open = lambda*eps_kk_open+2*mu*eps_xx_open; sigma_xy_open = 2*mu*eps_xy_open; sigma_xz_open = 2*mu*eps_xz_open;
 sigma_yx_open = 2*mu*eps_yx_open; sigma_yy_open = lambda*eps_kk_open+2*mu*eps_yy_open; sigma_yz_open = 2*mu*eps_yz_open;
 sigma_zx_open = 2*mu*eps_zx_open; sigma_zy_open = 2*mu*eps_zy_open; sigma_zz_open = lambda*eps_kk_open+2*mu*eps_zz_open;
 
-%% Vertical crack open only 
-% (Infinitesimal) strain tensor at the surface (SL)
-% eps_ij = 0.5*(dui_dj + duj_di)
-% eps is short for epsilon
+%% Strains and stresses for vertical crack open only:
+
 eps_xx_vert = dux_dx_vert; eps_xy_vert = 0.5*(dux_dy_vert+duy_dx_vert); eps_xz_vert = 0.5*(dux_dz_vert+duz_dx_vert);
 eps_yx_vert = 0.5*(duy_dx_vert+dux_dy_vert); eps_yy_vert = duy_dy_vert; eps_yz_vert = 0.5*(duy_dz_vert+duz_dy_vert);
 eps_zx_vert = 0.5*(duz_dx_vert+dux_dz_vert); eps_zy_vert = 0.5*(duz_dy_vert+duy_dz_vert); eps_zz_vert = duz_dz_vert;
 
-% Stress tensor at the surface
-% sigma_ij = lambda * delta_ij * eps_kk + 2*mu*eps_ij
-% where eps_kk = eps_xx + eps_yy + eps_zz is the volumetric strain
 eps_kk_vert = eps_xx_vert + eps_yy_vert + eps_zz_vert; 
 
 sigma_xx_vert = lambda*eps_kk_vert+2*mu*eps_xx_vert; sigma_xy_vert = 2*mu*eps_xy_vert; sigma_xz_vert = 2*mu*eps_xz_vert;
