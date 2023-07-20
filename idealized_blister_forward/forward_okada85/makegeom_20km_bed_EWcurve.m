@@ -50,7 +50,7 @@ xy_scarp_llh=llh2localxy(scarp_ll_h', origin);
 
 W=depthc; % km (depth along dip is equivalent to ice thickness)
 dip=90; % vertical (degrees)
-buried=0.01; % matches NIF inverse buried amount
+buried=0.1; % km; matches NIF inverse buried amount
 
 figure
 plot(xy_sta(:,1),xy_sta(:,2),'*'); 
