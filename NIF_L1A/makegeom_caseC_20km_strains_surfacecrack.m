@@ -1,4 +1,4 @@
-function [G1, G2, G3, G2b, G3b, Rc, Rb, patchesC, patchesB, G1v, G2v, G3v, G2bv, G3bv, G3v_strain, G2bv_strain, G3bv_strain]=makegeom_caseC_20km_strains(tsb,origin)
+function [G1, G2, G3, G2b, G3b, Rc, Rb, patchesC, patchesB, G1v, G2v, G3v, G2bv, G3bv, G3v_strain, G2bv_strain, G3bv_strain]=makegeom_caseC_20km_strains_surfacecrack(tsb,origin)
 path('./software/okada85',path)
 %% LAURA: CRACK GEOMETRY: 2 CRACKS INTERSECT AT APEX OF BEND, mark 2
 % 2021 Feb 25: build green's function matrices for a surface grid
@@ -371,11 +371,10 @@ strike=186;
 dip=0.01;  % slight dip down to the west so that is can slip west
 
 % just one patch
-buried=.2;
 clear disgeom
 disgeom(1)=L;
 disgeom(2)=W;
-disgeom(3)=1.0; % in km?
+disgeom(3)=1.0; % in km? -- yes
 disgeom(4)=dip;
 disgeom(5)=strike;
 disgeom(6)=xy_fault(1)*1 -W/2; % east offset of midpoint from origin (km)

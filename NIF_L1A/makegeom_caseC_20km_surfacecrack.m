@@ -1,7 +1,7 @@
-function [G1, G2, G3, G2b, G3b, Rc, Rb, patchesC, patchesB, G1v, G2v, G3v, G2bv, G3bv, G3v_strain, G2bv_strain, G3bv_strain]=makegeom_caseC_20km_strains(tsb,origin)
+function [G1, G2, G3, G2b, G3b, Rc, Rb, patchesC, patchesB]=makegeom_caseC_20km_surfacecrack(tsb,origin)
 path('./software/okada85',path)
+%
 %% LAURA: CRACK GEOMETRY: 2 CRACKS INTERSECT AT APEX OF BEND, mark 2
-% 2021 Feb 25: build green's function matrices for a surface grid
 
 %       makes the green's function matricies for a set of faults defined in
 %       this subroutine given a
@@ -14,12 +14,6 @@ path('./software/okada85',path)
 %       G3b nsites*3 (ENU) by n-subfaults matrix for basal opening
 %       Rc is the laplacian matrix for spatial smoothing of the crack   
 %       Rb is the laplacian matrix for spatial smoothing of the base
-%  Add in the locations of the entire 20x20km surface domain
-%       G1v  nsurface*3 (ENU) by n-surface-locations matrix for crack strike-slip 
-%       G2v  nsurface*3 (ENU) by n-surface-locations matrix for crack thrust slip
-%       G3v  nsurface*3 (ENU) by n-surface-locations matrix for crack opening
-%       G2bv nsurface*3 (ENU) by n-surface-locations matrix for basal thrust slip
-%       G3bv nsurface*3 (ENU) by n-surface-locations matrix for basal opening
 
 %hardwired  ASSUMES SAME ORDER AS TS OBJECT 
     load apcoords_lle;
@@ -30,12 +24,6 @@ path('./software/okada85',path)
     xy_sta=llh2localxy(llh,origin);        
     Nsites=length(lats);
 %%%%%%%%% GOAL IS 3 component Green's functions for each station
-
-% xy for the 20km x 20 km surface
-[xx,yy] = meshgrid(-20:0.5:20, -20:0.5:20); %500-m grid
-xy_surf = horzcat(reshape(xx,81*81,1), reshape(yy,81*81,1));
-Nsurface=length(xy_surf);
-%%%%%%%%% GOAL IS 3 component Green's functions for each surface location
 
 %%%%%%%%%%%%%%% GEOMETRY %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % old Segall group mex file setup
@@ -296,67 +284,6 @@ hold on; xlabel(' x(km)'); ylabel('y (km)');
 
 end
 end
-
-% For the entire surface
-for i=1:Npatches
- % Convert everything to coordinates of fault centroid is at 0,0
- E=xy_surf(:,1)-patches(i,6);
- N=xy_surf(:,2)-patches(i,7);
- L=patches(i,1);
- W=patches(i,2);
- depthc=patches(i,3)-W/2;  % convert from lower edge (segall) to centroid 
- strike=patches(i,5);
- dip=patches(i,4);
- 
- %strike-slip
-  rake=0; slip=1.0; open=0;  % strike-slip  in meters
-  [uE,uN,uZ,uZE,uZN,uNN,uNE,uEN,uEE] = okada85(E,N,...
-                depthc,strike,dip,L,W,rake,slip,open,nu);
-  G1v(1:Nsurface*3,i)=[uE; uN; uZ]';   % block order not  ENU for each station   
-  %G1v_strain(1:Nsurface*6,i)=[uZE; uZN; uNN; uNE; uEN; uEE]';   % strains  
- 
-  %thrust
-  rake=90; slip=1.0; open=0;  % strike-slip  in meters
-  [uE,uN,uZ,uZE,uZN,uNN,uNE,uEN,uEE] = okada85(E,N,...
-                depthc,strike,dip,L,W,rake,slip,open,nu);
-  G2v(1:Nsurface*3,i)=[uE; uN; uZ]';   % block order not  ENU for each station           
-  %G2v_strain(1:Nsurface*6,i)=[uZE; uZN; uNN; uNE; uEN; uEE]';   % strains  
- 
-  %opening
-  rake=0; slip=0.0; open=1;  % strike-slip  in meters
-  [uE,uN,uZ,uZE,uZN,uNN,uNE,uEN,uEE] = okada85(E,N,...
-                depthc,strike,dip,L,W,rake,slip,open,nu);
-  G3v(1:Nsurface*3,i)=[uE; uN; uZ]';   % block order not  ENU for each station           
-  G3v_strain(1:Nsurface*6,i)=[uZE; uZN; uNN; uNE; uEN; uEE]';   % strains  
- 
- %keyboard                  
-end
-     
-plotresults=0;
-if(plotresults)
-figure
-for j=1:8
-subplot(4,2,j)
-scale=50;
-
-plot(xy_surf(:,1),xy_surf(:,2),'m^','MarkerSize',5); hold on;
-  %  plot([patches(j,6)-patches(j,1),patches(j,6)+patches(j,1)],[patches(j,7),patches(j,7)],'g-','LineWidth',3);
-     plot([xy_fault(1)+patches(j,6)+((patches(j,1)/Nx)*(sind(patches(j,5)))),...
-        xy_fault(1)+patches(j,6)-((patches(j,1)/Nx)*(sind(patches(j,5))))],...
-        [xy_fault(1)+patches(j,7)+((patches(j,1)/Nz)*(cosd(patches(j,5)))),...
-        xy_fault(1)+patches(j,7)-((patches(j,1)/Nz)*(cosd(patches(j,5))))],...
-        'g-','LineWidth',3);
-hold on; xlabel(' x(km)'); ylabel('y (km)');
- for i=1:Nsurface
-    ind1=i; ind2=Nsurface+i; ind3=Nsurface*2+i;
-    quiver(xy_surf(i,1),xy_surf(i,2),scale*G3v(ind1,j),scale*G3v(ind2,j),'r','filled','LineWidth',2)
-    quiver(xy_surf(i,1),xy_surf(i,2),0,scale*G3v(ind3,j),'k','filled','LineWidth',2); hold on;
- end
-    text(4,4,[num2str(j)])
-    axis('equal'); axis([-5 5 -5 5])
-
-end
-end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%% END OF VERTICAL CRACK
 %%%%%%%%%%%%%%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -371,7 +298,6 @@ strike=186;
 dip=0.01;  % slight dip down to the west so that is can slip west
 
 % just one patch
-buried=.2;
 clear disgeom
 disgeom(1)=L;
 disgeom(2)=W;
@@ -458,83 +384,6 @@ for i=1:Npatchesb
                 depthc,strike,dip,L,W,rake,slip,open,nu);
   G3b(1:Nsites*3,i)=[uE; uN; uZ]';   % block order not  ENU for each station           
                   
-end
-
-%whos G*
-%keyboard
-
-plotresults=0;
-if(plotresults)
- figure
- for j=1:Npatchesb
-  subplot(Nx,Ny,j)
-  scale=5;
-  plot(xy_sta(:,1),xy_sta(:,2),'m^','MarkerSize',5); hold on;
-  rectangle('Position',[patches(j,6),patches(j,7)-patches(j,2)/2,patches(j,1),patches(j,2)]);
-  %plot([patches(j,6)-patches(j,1),patches(j,6)+patches(j,1)],[patches(j,7),patches(j,7)],'g-','LineWidth',3);
-  hold on; xlabel(' x(km)'); ylabel('y (km)');
-  for i=1:Nsites
-    ind1=i; ind2=Nsites+i; ind3=Nsites*2+i;
-    quiver(xy_sta(i,1),xy_sta(i,2),scale*G3b(ind1,j),scale*G3b(ind2,j),'r','filled','LineWidth',2)
-    quiver(xy_sta(i,1),xy_sta(i,2),0,scale*G3b(ind3,j),'k','filled','LineWidth',2); hold on;
-  end
-    title(['Opening for Base Subfault',num2str(j)])
-    axis('equal'); axis([-5 5 -5 5])
- end
-
- figure
- for j=1:Npatchesb
-  subplot(Nx,Ny,j)
-  scale=5;
-  plot(xy_sta(:,1),xy_sta(:,2),'m^','MarkerSize',5); hold on;
-  %keyboard
-  rectangle('Position',[patches(j,6),patches(j,7)-patches(j,2)/2,patches(j,1),patches(j,2)]);
-  %plot([patches(j,6)-patches(j,1),patches(j,6)+patches(j,1)],[patches(j,7),patches(j,7)],'g-','LineWidth',3);
-  hold on; xlabel(' x(km)'); ylabel('y (km)');
-  for i=1:Nsites
-    ind1=i; ind2=Nsites+i; ind3=Nsites*2+i;
-    quiver(xy_sta(i,1),xy_sta(i,2),scale*G2b(ind1,j),scale*G2b(ind2,j),'r','filled','LineWidth',2)
-    quiver(xy_sta(i,1),xy_sta(i,2),0,scale*G2b(ind3,j),'k','filled','LineWidth',2); hold on;
-  end
-    title(['Thrust for Base Subfault',num2str(j)])
-    axis('equal'); axis([-5 5 -5 5])
- end
-
-
-end
-
-% for entire surface
-for i=1:Npatchesb
- % Convert everything to coordinates of fault centroid is at 0,0
- E=xy_surf(:,1)-(patches(i,6)+(patches(i,2)/2)*cosd(strike-180));
- N=xy_surf(:,2)-(patches(i,7) + (patches(i,2)/2)*sind(strike));
- L=patches(i,1);
- W=patches(i,2);
- depthc=patches(i,3)-(W/2)*tan(dip*pi/180);  % convert from lower edge (segall) to centroid 
- depthc=1.0;  % okay to be same for all assume dip is negligble? 
-
- %figure; plot(E,N,'*'); title(i);
- %keyboard
- %strike-slip
- %rake=0; slip=1.0; open=0;  % strike-slip  in meters
- %[uE,uN,uZ,uZE,uZN,uNN,uNE,uEN,uEE] = okada85(E,N,...
- %               depthc,strike,dip,L,W,rake,slip,open,nu);
- % G1(1:Nsites*3,i)=[uE; uN; uZ]';   % block order not  ENU for each station           
- 
- %thrust
-  rake=90; slip=1.0; open=0;  % strike-slip  in meters
-  [uE,uN,uZ,uZE,uZN,uNN,uNE,uEN,uEE] = okada85(E,N,...
-                depthc,strike,dip,L,W,rake,slip,open,nu);
-  G2bv(1:Nsurface*3,i)=[uE; uN; uZ]';   % block order not  ENU for each station           
-  G2bv_strain(1:Nsurface*6,i)=[uZE; uZN; uNN; uNE; uEN; uEE]';   % strains  
- 
-  %opening
-  rake=0; slip=0.0; open=1;  % strike-slip  in meters
-  [uE,uN,uZ,uZE,uZN,uNN,uNE,uEN,uEE] = okada85(E,N,...
-                depthc,strike,dip,L,W,rake,slip,open,nu);
-  G3bv(1:Nsurface*3,i)=[uE; uN; uZ]';   % block order not  ENU for each station           
-  G3bv_strain(1:Nsurface*6,i)=[uZE; uZN; uNN; uNE; uEN; uEE]';   % strains  
-             
 end
 
 %whos G*
