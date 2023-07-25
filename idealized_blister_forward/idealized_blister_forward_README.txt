@@ -9,13 +9,11 @@ within /make_idealized_blisters: run idealized_blister.m
 
 Plots some helpful figures of blister geometry and a Y/N indicator of where slip occurs.
 
-
 (2) populate Green function matrices for slip and opening along a 20 x 20 km horizontal plane located at some depth within an elastic halfspace. 
 
 within /forward_okada85: run run_Gmatrix_20km_bed_thickness.m
 
 ** This run file stops after Green function matrices are populated. Does not complete inversion. **
-
 
 (3) multiply Green function matrices from (2) by idealized blister opening and slip from (1) to forward model displacement, strain, and stress at the surface of the elastic half space. N.B. Only considers slip and opening along the bed (no mode-1 opening of a vertical fracture). 
 
@@ -23,20 +21,17 @@ within /forward_okada: Nsurface_displ_strain_stress_*m.m
 
 Plots a helpful figure of (columns) surface displacement, strain, and stress for (rows) xx, yy, and zz for [opening], [slip], and [opening and slip] defined along the basal plane. Saves files to /forward_okada/Forward_*m_check_plots.
 
-
 (4) plotting script for JGR:ES Figure 4: idealized blister example. 
 
-within /forward_okada: run_Gmatrix_20km_bed_thickness_EWvert_4km.m
-within /forward_okada: Nsurface_displ_strain_stress_1250m_EWvert_4km.m
-within /forward_okada: paperfig3_idealized_example_4kmHF_20230710.m 
-
+within /forward_okada85: run_Gmatrix_20km_bed_thickness_EWvert_surfC_4km.m
+within /forward_okada85: Nsurface_displ_strain_stress_1250m_EWvert_surfC_4km.m 
+within /forward_okada85: paperfig4_Nsurface_idealized_example_4kmvertHF_surfC_20230724.m 
 
 (5) plotting script for JGR:ES Figure 10: idealized blisters over parameter range. Vary material properties here to create Figures S5 and S6.
 
-within /forward_okada: paperfig10_idealized_15GPa_20230630.m 
-within /forward_okada: paperfigS5_idealized_032GPa_20230630.m 
-within /forward_okada: paperfigS6_idealized_39GPa_20230630.m 
-
+within /forward_okada: paperfig10_Nsurface_princstress_200kPa_15GPa_20230724.m 
+within /forward_okada: paperfigS5_Nsurface_princstress_200kPa_032GPa_20230724.m 
+within /forward_okada: paperfigS6_Nsurface_princstress_200kPa_39GPa_20230724.m 
 
 (6) .m files needed for the NIF are in /software (all files from Jeff McGuire)
 
