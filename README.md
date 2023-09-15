@@ -1,5 +1,5 @@
 # lake_strain
-Run NIF and create figures in Stevens et al. (202?)
+Run NIF and create figures in Stevens et al. (202?): Limits to stress coupling between supraglacial lakes.
 
 
 /GPS_strain_rates: 
