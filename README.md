@@ -1,4 +1,4 @@
-# lake_strain
+# lake_strain (_Stevens et al.,_ 2024)
 Run NIF and create figures in Stevens et al. (2024): Elastic stress coupling between supraglacial lakes.
 
 
